@@ -30,11 +30,11 @@ jobs:
 
       - name: Export CI tool matrix
         id: tool-matrix
-        run: echo "json=$(make release-workflow-tools WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
+        run: echo "json=$(make -s release-workflow-tools WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
 
       - name: Export CI build matrix
         id: build-matrix
-        run: echo "json=$(make release-workflow-matrix WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
+        run: echo "json=$(make -s release-workflow-matrix WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
 
   verify:
     needs: prepare

@@ -39,7 +39,7 @@ jobs:
       - name: Export release matrix
         id: matrix
         run: |
-          matrix_json="$(make release-matrix TOOL="${{ steps.tool.outputs.id }}" WORKFLOW=release)"
+          matrix_json="$(make -s release-matrix TOOL="${{ steps.tool.outputs.id }}" WORKFLOW=release)"
           echo "json=${matrix_json}" >> "$GITHUB_OUTPUT"
 
   create-release:
