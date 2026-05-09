@@ -1,0 +1,7 @@
+go 1.25.0
+
+use (
+	./libs/appkit
+	./libs/utils
+	./services/mtu_tuner
+)

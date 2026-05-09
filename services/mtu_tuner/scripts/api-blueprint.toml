@@ -1,0 +1,21 @@
+[blueprint]
+entrypoints = [
+    "blueprint.app:bp",
+]
+
+[[go.server]]
+id = "go.server"
+out_dir = "../internal/views"
+module = "mtu-tuner"
+
+[[typescript.client]]
+id = "typescript.client"
+out_dir = "../cmd/gui/frontend/src/lib/api"
+
+[[transport.wails]]
+id = "wails.v3"
+version = "v3"
+server = "go.server"
+clients = ["typescript.client"]
+frontend_mode = "external"
+overlay_name = "wailsv3"

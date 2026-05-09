@@ -1,0 +1,8 @@
+# pnpm v10 uses onlyBuiltDependencies, while newer pnpm versions accept allowBuilds.
+# Keep both so copied checkouts can install frontend deps without a manual approve-builds step.
+allowBuilds:
+  "@swc/core": true
+  esbuild: true
+onlyBuiltDependencies:
+  - "@swc/core"
+  - esbuild

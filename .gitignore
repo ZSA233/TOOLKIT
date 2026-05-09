@@ -1,0 +1,9 @@
+.DS_Store
+.worktrees/
+*.pyi
+__pycache__
+*.pyc
+services/mtu_tuner/gui
+services/mtu_tuner/build/release/
+.superpowers/
+docs/superpowers/

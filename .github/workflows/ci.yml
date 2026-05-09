@@ -1,0 +1,85 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      tool_matrix: ${{ steps.tool-matrix.outputs.json }}
+      build_matrix: ${{ steps.build-matrix.outputs.json }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run release tool unit tests
+        run: python3 -m unittest -v scripts.tests.test_releasectl
+
+      - name: Export CI tool matrix
+        id: tool-matrix
+        run: echo "json=$(make release-workflow-tools WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
+
+      - name: Export CI build matrix
+        id: build-matrix
+        run: echo "json=$(make release-workflow-matrix WORKFLOW=ci)" >> "$GITHUB_OUTPUT"
+
+  verify:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.tool_matrix) }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up toolkit dependencies
+        uses: ./.github/actions/setup-toolkit
+        with:
+          go-version-file: ${{ matrix.go_mod_file }}
+          install-linux-gui-deps: ${{ matrix.needs_linux_gui_deps && 'true' || 'false' }}
+
+      - name: Validate release metadata
+        shell: bash
+        run: ${{ matrix.validate_command }}
+
+      - name: Run short tests
+        shell: bash
+        run: ${{ matrix.test_command }}
+
+  build:
+    needs:
+      - prepare
+      - verify
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.build_matrix) }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up toolkit dependencies
+        uses: ./.github/actions/setup-toolkit
+        with:
+          go-version-file: ${{ matrix.go_mod_file }}
+          pnpm-lock-file: ${{ matrix.frontend_lock_file }}
+          install-node: ${{ matrix.component == 'gui' && 'true' || 'false' }}
+          install-linux-gui-deps: ${{ matrix.needs_linux_gui_deps && 'true' || 'false' }}
+
+      - name: Build target
+        shell: bash
+        run: ${{ matrix.build_command }}

@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "baseUrl": ".",
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node", "react", "react-dom"],
+    "paths": {
+      "@toolkit/appkit-webui": ["../../../../../libs/appkit/webui/src/index.ts"],
+      "@toolkit/appkit-webui/draft-list.css": ["../../../../../libs/appkit/webui/src/draft_list/draft_list.css"],
+      "@dnd-kit/core": ["./node_modules/@dnd-kit/core"],
+      "@dnd-kit/sortable": ["./node_modules/@dnd-kit/sortable"],
+      "@dnd-kit/utilities": ["./node_modules/@dnd-kit/utilities"],
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
+      "react/jsx-dev-runtime": ["./node_modules/@types/react/jsx-dev-runtime.d.ts"]
+    },
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "../../../../../libs/appkit/webui/src/**/*"],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "../../../../../libs/appkit/webui/src/**/*.test.ts",
+    "../../../../../libs/appkit/webui/src/**/*.test.tsx"
+  ]
+}

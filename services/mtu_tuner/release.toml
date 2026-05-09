@@ -1,0 +1,80 @@
+schema_version = 1
+
+[tool]
+id = "mtu-tuner"
+name = "mtu-tuner"
+version = "0.1.0"
+service_dir = "services/mtu_tuner"
+release_notes = "docs/tools/mtu-tuner.md"
+
+[github]
+tag_prefix = "mtu-tuner/v"
+
+[[target]]
+id = "cli-linux-amd64"
+component = "cli"
+runner = "ubuntu-24.04"
+platform = "linux"
+arch = "amd64"
+goos = "linux"
+goarch = "amd64"
+package_format = "tar.gz"
+workflows = ["ci", "release", "release-rc"]
+
+[[target]]
+id = "cli-macos-arm64"
+component = "cli"
+runner = "macos-14"
+platform = "macos"
+arch = "arm64"
+goos = "darwin"
+goarch = "arm64"
+package_format = "tar.gz"
+workflows = ["release", "release-rc"]
+
+[[target]]
+id = "cli-windows-amd64"
+component = "cli"
+runner = "windows-2022"
+platform = "windows"
+arch = "amd64"
+goos = "windows"
+goarch = "amd64"
+package_format = "zip"
+workflows = ["release", "release-rc"]
+
+[[target]]
+id = "gui-linux-amd64"
+component = "gui"
+runner = "ubuntu-24.04"
+platform = "linux"
+arch = "amd64"
+goos = "linux"
+goarch = "amd64"
+package_format = "tar.gz"
+bundle_dist = true
+workflows = ["ci", "release", "release-rc"]
+
+[[target]]
+id = "gui-macos-arm64"
+component = "gui"
+runner = "macos-14"
+platform = "macos"
+arch = "arm64"
+goos = "darwin"
+goarch = "arm64"
+package_format = "tar.gz"
+bundle_dist = true
+workflows = ["ci", "release", "release-rc"]
+
+[[target]]
+id = "gui-windows-amd64"
+component = "gui"
+runner = "windows-2022"
+platform = "windows"
+arch = "amd64"
+goos = "windows"
+goarch = "amd64"
+package_format = "zip"
+bundle_dist = true
+workflows = ["ci", "release", "release-rc"]

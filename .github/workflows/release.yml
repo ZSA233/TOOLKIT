@@ -1,0 +1,109 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "*/v*"
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: ${{ !contains(github.ref_name, '-rc.') }}
+    runs-on: ubuntu-24.04
+    outputs:
+      tool: ${{ steps.tool.outputs.id }}
+      matrix: ${{ steps.matrix.outputs.json }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Resolve release tool
+        id: tool
+        run: |
+          tool_id="$(python3 scripts/releasectl.py tool-from-tag --tag "${GITHUB_REF_NAME}")"
+          echo "id=${tool_id}" >> "$GITHUB_OUTPUT"
+
+      - name: Run release tool unit tests
+        run: python3 -m unittest -v scripts.tests.test_releasectl
+
+      - name: Validate stable release metadata
+        run: make release-validate TOOL="${{ steps.tool.outputs.id }}" WORKFLOW=release TAG="${GITHUB_REF_NAME}"
+
+      - name: Export release matrix
+        id: matrix
+        run: |
+          matrix_json="$(make release-matrix TOOL="${{ steps.tool.outputs.id }}" WORKFLOW=release)"
+          echo "json=${matrix_json}" >> "$GITHUB_OUTPUT"
+
+  create-release:
+    if: ${{ !contains(github.ref_name, '-rc.') }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "release ${GITHUB_REF_NAME} already exists"
+            exit 0
+          fi
+          gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes
+
+  build:
+    if: ${{ !contains(github.ref_name, '-rc.') }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up toolkit dependencies
+        uses: ./.github/actions/setup-toolkit
+        with:
+          go-version-file: ${{ matrix.go_mod_file }}
+          pnpm-lock-file: ${{ matrix.frontend_lock_file }}
+          install-node: ${{ matrix.component == 'gui' && 'true' || 'false' }}
+          install-linux-gui-deps: ${{ matrix.needs_linux_gui_deps && 'true' || 'false' }}
+
+      - name: Build target
+        shell: bash
+        run: ${{ matrix.build_command }}
+
+      - name: Package target
+        shell: bash
+        run: ${{ matrix.package_command }}
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.id }}
+          path: ${{ matrix.archive_path }}
+
+  publish-assets:
+    if: ${{ !contains(github.ref_name, '-rc.') }}
+    needs:
+      - create-release
+      - build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download packaged artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: release-assets
+
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${GITHUB_REF_NAME}" release-assets/* --clobber
