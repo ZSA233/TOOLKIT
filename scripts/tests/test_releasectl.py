@@ -171,6 +171,48 @@ class ReleaseCtlDiscoveryTests(unittest.TestCase):
                 },
             )
 
+    def test_workflow_tools_require_linux_gui_deps_when_ci_targets_include_gui_linux(self) -> None:
+        releasectl = load_releasectl()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir)
+            write_release_tool(
+                repo_root,
+                service_name="alpha_tool",
+                tool_id="alpha-tool",
+                targets_toml=textwrap.dedent(
+                    """
+                    [[target]]
+                    id = "cli-linux-amd64"
+                    component = "cli"
+                    runner = "ubuntu-24.04"
+                    platform = "linux"
+                    arch = "amd64"
+                    goos = "linux"
+                    goarch = "amd64"
+                    package_format = "tar.gz"
+                    workflows = ["ci", "release"]
+
+                    [[target]]
+                    id = "gui-linux-amd64"
+                    component = "gui"
+                    runner = "ubuntu-24.04"
+                    platform = "linux"
+                    arch = "amd64"
+                    goos = "linux"
+                    goarch = "amd64"
+                    package_format = "tar.gz"
+                    bundle_dist = true
+                    workflows = ["ci", "release"]
+                    """
+                ).strip(),
+            )
+
+            matrix = releasectl.workflow_tools("ci", repo_root)
+
+            self.assertEqual(len(matrix["include"]), 1)
+            self.assertTrue(matrix["include"][0]["needs_linux_gui_deps"])
+
     def test_workflow_matrix_flattens_targets_across_tools(self) -> None:
         releasectl = load_releasectl()
 

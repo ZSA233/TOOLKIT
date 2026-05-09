@@ -31,12 +31,14 @@ GUI 使用 `Wails v3` 本地绑定，不启动独立 HTTP 服务。
 接口校验与生成：
 
 ```bash
-API_BLUEPRINT_PROJECT=/path/to/api-blueprint make mtu-tuner-api-check
-API_BLUEPRINT_PROJECT=/path/to/api-blueprint make mtu-tuner-api-gen-all
-API_BLUEPRINT_PROJECT=/path/to/api-blueprint make mtu-tuner-api-gen-golang
-API_BLUEPRINT_PROJECT=/path/to/api-blueprint make mtu-tuner-api-gen-typescript
-API_BLUEPRINT_PROJECT=/path/to/api-blueprint make mtu-tuner-api-gen-wails
+make mtu-tuner-api-check
+make mtu-tuner-api-gen-all
+make mtu-tuner-api-gen-golang
+make mtu-tuner-api-gen-typescript
+make mtu-tuner-api-gen-wails
 ```
+
+如果需要从本地 `api-blueprint` 源码工作区运行，而不是直接使用已安装的公开工具，可额外传入 `API_BLUEPRINT_PROJECT=/path/to/api-blueprint`。
 
 测试与构建：
 

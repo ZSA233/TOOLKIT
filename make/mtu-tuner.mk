@@ -91,7 +91,7 @@ mtu-tuner-gui-frontend-build: mtu-tuner-gui-frontend-install
 
 .PHONY: mtu-tuner-gui-frontend-install
 mtu-tuner-gui-frontend-install:
-	cd $(MTU_TUNER_GUI_FRONTEND_DIR) && $(PNPM) approve-builds @swc/core esbuild
+	# Build-script approvals live in pnpm-workspace.yaml so CI installs stay non-interactive.
 	cd $(MTU_TUNER_GUI_FRONTEND_DIR) && $(PNPM) install --frozen-lockfile
 
 .PHONY: mtu-tuner-gui-build

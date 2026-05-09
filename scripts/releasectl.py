@@ -331,7 +331,7 @@ def workflow_tools(workflow: str, repo_root: Path | str | None = None) -> dict[s
         targets = workflow_targets(release_tool, workflow)
         if not targets:
             continue
-        include.append(workflow_tool_entry(release_tool, workflow, targets[0]))
+        include.append(workflow_tool_entry(release_tool, workflow, targets))
     if not include:
         raise ReleaseCtlError(f"workflow {workflow!r} has no tools")
     return {"include": include}
@@ -386,14 +386,15 @@ def target_matrix_entry(release_tool: ReleaseTool, target: BuildTarget) -> dict[
     }
 
 
-def workflow_tool_entry(release_tool: ReleaseTool, workflow: str, verify_target: BuildTarget) -> dict[str, Any]:
+def workflow_tool_entry(release_tool: ReleaseTool, workflow: str, targets: list[BuildTarget]) -> dict[str, Any]:
     # CI discovery only knows about release metadata, so tools opt in by exposing
     # the standard <tool>-test make target alongside release.toml.
+    verify_target = targets[0]
     return {
         "tool": release_tool.id,
         "runner": verify_target.runner,
         "go_mod_file": release_tool.go_mod_file.as_posix(),
-        "needs_linux_gui_deps": verify_target.component == "gui" and verify_target.goos == "linux",
+        "needs_linux_gui_deps": any(target.component == "gui" and target.goos == "linux" for target in targets),
         "test_command": f"make {release_tool.id}-test GO_TEST_FLAGS=-short",
         "validate_command": f"python3 scripts/releasectl.py validate --tool {release_tool.id} --workflow {workflow}",
     }
