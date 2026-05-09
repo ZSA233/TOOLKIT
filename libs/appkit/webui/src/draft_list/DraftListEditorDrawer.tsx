@@ -16,6 +16,7 @@ export function DraftListEditorDrawer<TItem extends { order: number }>(props: {
   description?: string;
   closeLabel?: string;
   addLabel: string;
+  saveLabel?: string;
   doneLabel: string;
   discardTitle?: string;
   discardDescription?: string;
@@ -23,6 +24,8 @@ export function DraftListEditorDrawer<TItem extends { order: number }>(props: {
   discardLabel?: string;
   session: DraftListSession<TItem>;
   onRequestAdd(): void;
+  onSave?(): Promise<void> | void;
+  saveBusy?: boolean;
   onClose(): void;
   renderRow(input: DraftListRenderRowInput<TItem>): ReactNode;
   renderOverlay(input: DraftListRenderOverlayInput<TItem>): ReactNode;
@@ -128,6 +131,13 @@ export function DraftListEditorDrawer<TItem extends { order: number }>(props: {
     props.onClose();
   };
 
+  const handleSave = async () => {
+    if (!props.onSave || props.saveBusy) {
+      return;
+    }
+    await props.onSave();
+  };
+
   return createPortal(
     <div className="drawer-layer" data-state={visualPhase}>
       <button
@@ -146,7 +156,21 @@ export function DraftListEditorDrawer<TItem extends { order: number }>(props: {
             <button className="draft-list-action-button draft-list-action-button--ghost" onClick={props.onRequestAdd} type="button">
               {props.addLabel}
             </button>
-            <button className="draft-list-action-button draft-list-action-button--primary" onClick={requestClose} type="button">
+            {props.onSave ? (
+              <button
+                className="draft-list-action-button draft-list-action-button--primary"
+                disabled={props.saveBusy || !props.session.hasDirtyChanges}
+                onClick={() => void handleSave()}
+                type="button"
+              >
+                {props.saveBusy ? "Saving..." : (props.saveLabel ?? "Save")}
+              </button>
+            ) : null}
+            <button
+              className={`draft-list-action-button ${props.onSave ? "draft-list-action-button--ghost" : "draft-list-action-button--primary"}`}
+              onClick={requestClose}
+              type="button"
+            >
               {props.doneLabel}
             </button>
           </div>

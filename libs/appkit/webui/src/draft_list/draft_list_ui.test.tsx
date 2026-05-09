@@ -67,4 +67,33 @@ describe("DraftListEditorDrawer", () => {
     expect(onClose).not.toHaveBeenCalled();
     expect(screen.getByRole("alertdialog", { name: "Discard unsaved changes?" })).toBeTruthy();
   });
+
+  it("renders an explicit save action when the drawer provides one", async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn(async () => undefined);
+    const session = createSession({
+      hasDirtyChanges: true,
+      rowChangesById: new Map([["alpha", new Set(["value"])]]),
+    });
+
+    render(
+      <DraftListEditorDrawer
+        addLabel="Add Target"
+        doneLabel="Done"
+        onClose={vi.fn()}
+        onRequestAdd={() => session.appendNewItem()}
+        onSave={onSave}
+        open
+        renderOverlay={({ row }) => <div>{row.item.name}</div>}
+        renderRow={({ row }) => <div>{row.item.name}</div>}
+        saveLabel="Save"
+        session={session}
+        title="Targets"
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+  });
 });

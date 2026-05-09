@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -847,7 +847,7 @@ describe("DashboardApp", () => {
     await user.click(screen.getByRole("button", { name: "Route & Clash" }));
 
     await user.type(screen.getByLabelText("Clash Secret"), "top-secret");
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByTestId("save-config"));
 
     await waitFor(() => {
       const saved = deps.getSavedPayload();
@@ -856,7 +856,7 @@ describe("DashboardApp", () => {
     });
   });
 
-  it("opens the advanced test-target drawer and persists edited targets", async () => {
+  it("saves edited test targets directly from the advanced drawer", async () => {
     const deps = createMockDeps();
     const user = userEvent.setup();
     render(<DashboardApp deps={deps} />);
@@ -872,13 +872,11 @@ describe("DashboardApp", () => {
     expect(screen.queryByLabelText("Target Name")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Edit yt_page" }));
 
+    const dialog = screen.getByRole("dialog", { name: "Advanced Test Targets" });
     const nameInput = screen.getByLabelText("Target Name");
     await user.clear(nameInput);
     await user.type(nameInput, "YouTube Landing");
-    await user.click(screen.getByRole("button", { name: "Done" }));
-
-    await user.click(screen.getByRole("button", { name: "Route & Clash" }));
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => {
       const saved = deps.getSavedPayload();
@@ -887,6 +885,11 @@ describe("DashboardApp", () => {
       expect((saved?.test_targets as Array<{ name: string }>)[0]?.name).toBe(
         "YouTube Landing",
       );
+    });
+
+    await user.click(within(dialog).getByRole("button", { name: "Done" }));
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: "Advanced Test Targets" })).toBeNull();
     });
   });
 
@@ -1009,7 +1012,7 @@ describe("DashboardApp", () => {
     });
 
     await user.click(screen.getByRole("button", { name: "Route & Clash" }));
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByTestId("save-config"));
 
     await waitFor(() => {
       const saved = deps.getSavedPayload();
@@ -1082,7 +1085,7 @@ describe("DashboardApp", () => {
     await user.click(screen.getByRole("button", { name: "Done" }));
 
     await user.click(screen.getByRole("button", { name: "Route & Clash" }));
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByTestId("save-config"));
 
     await waitFor(() => {
       const saved = deps.getSavedPayload();
@@ -1113,7 +1116,7 @@ describe("DashboardApp", () => {
 
     await user.click(screen.getByRole("button", { name: "Done" }));
     await user.click(screen.getByRole("button", { name: "Route & Clash" }));
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByTestId("save-config"));
 
     await waitFor(() => {
       const saved = deps.getSavedPayload();

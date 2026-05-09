@@ -689,6 +689,7 @@ export function useDashboardController(deps: DashboardDeps): {
       });
     },
     async saveSettings() {
+      let savedOk = false;
       await withPending("save-settings", async () => {
         const current = stateRef.current;
         const saved = await deps.api.settingsClient.saveCurrentSettings({
@@ -709,7 +710,9 @@ export function useDashboardController(deps: DashboardDeps): {
           }));
         });
         pushLog("Saved local configuration. Clash secret was not persisted.");
+        savedOk = true;
       });
+      return savedOk;
     },
     async reloadSettings() {
       await withPending("reload-settings", async () => {

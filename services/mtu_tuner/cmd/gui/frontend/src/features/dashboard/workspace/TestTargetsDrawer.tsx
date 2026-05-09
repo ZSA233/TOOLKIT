@@ -21,6 +21,7 @@ export function TestTargetsDrawer(props: {
   open: boolean;
   settings: SessionSettings;
   actions: DashboardActions;
+  saveBusy: boolean;
   onClose(): void;
 }) {
   const session = useDraftListSession({
@@ -46,6 +47,12 @@ export function TestTargetsDrawer(props: {
       keepEditingLabel="Keep Editing"
       onClose={props.onClose}
       onRequestAdd={() => session.appendNewItem()}
+      onSave={async () => {
+        const saved = await props.actions.saveSettings();
+        if (saved) {
+          session.promoteDraftToBaseline();
+        }
+      }}
       open={props.open}
       renderOverlay={({ row, index }) => <TestTargetsRowOverlay index={index} target={row.item} />}
       renderRow={({ row, index, changed, expanded }) => (
@@ -80,6 +87,8 @@ export function TestTargetsDrawer(props: {
           target={row.item}
         />
       )}
+      saveBusy={props.saveBusy}
+      saveLabel="Save"
       session={session}
       title="Advanced Test Targets"
     />

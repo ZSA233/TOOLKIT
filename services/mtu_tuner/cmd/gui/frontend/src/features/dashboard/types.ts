@@ -94,7 +94,7 @@ export interface DashboardDerivedState {
 
 export interface DashboardActions {
   updateSetting<K extends keyof SessionSettings>(key: K, value: SessionSettings[K]): void;
-  saveSettings(): Promise<void>;
+  saveSettings(): Promise<boolean>;
   reloadSettings(): Promise<void>;
   autoDetectInterface(clashCurrent?: boolean): Promise<void>;
   selectInterface(key: string): Promise<void>;

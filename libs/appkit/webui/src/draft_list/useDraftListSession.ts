@@ -74,6 +74,7 @@ export function useDraftListSession<TItem extends { order: number }>(
     return initialRows;
   });
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+  const [baselineRevision, setBaselineRevision] = useState(0);
 
   const commitRows = (nextRows: DraftListRow<TItem>[], nextExpandedRowId = expandedRowId) => {
     setRows(nextRows);
@@ -98,7 +99,7 @@ export function useDraftListSession<TItem extends { order: number }>(
 
   const rowChangesById = useMemo(
     () => computeDraftRowChanges(baselineRowsRef.current, rows, options.itemsEqual),
-    [rows, options.itemsEqual],
+    [baselineRevision, rows, options.itemsEqual],
   );
   const hasDirtyChanges = rowChangesById.size > 0 || hasRemovedRows(baselineRowsRef.current, rows);
 
@@ -157,6 +158,7 @@ export function useDraftListSession<TItem extends { order: number }>(
     },
     promoteDraftToBaseline() {
       baselineRowsRef.current = cloneRows(rows, options.cloneItem);
+      setBaselineRevision((current) => current + 1);
     },
     setExpandedRowId,
   };

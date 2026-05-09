@@ -113,6 +113,7 @@ export function DashboardWorkspace(props: {
       <TestTargetsDrawer
         actions={props.actions}
         open={props.testTargetsOpen}
+        saveBusy={props.state.pendingAction === "save-settings"}
         settings={props.state.settings}
         onClose={props.onCloseTestTargets}
       />
