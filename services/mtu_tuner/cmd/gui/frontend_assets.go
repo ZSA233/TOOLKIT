@@ -1,3 +1,5 @@
+//go:build !mtu_tuner_embed_frontend
+
 package main
 
 import (

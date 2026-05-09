@@ -4,6 +4,8 @@
 __pycache__
 *.pyc
 services/mtu_tuner/gui
+services/mtu_tuner/build/bin/
+services/mtu_tuner/build/packages/
 services/mtu_tuner/build/release/
 .superpowers/
 docs/superpowers/

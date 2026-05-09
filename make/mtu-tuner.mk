@@ -35,7 +35,7 @@ GUI_BIN_NAME ?=
 MTU_TUNER_GUI_BIN_NAME ?= $(if $(strip $(GUI_BIN_NAME)),$(GUI_BIN_NAME),gui)
 MTU_TUNER_GUI_BIN_PATH := $(call MTU_TUNER_BIN_PATH,gui,$(MTU_TUNER_GUI_BIN_NAME))
 MTU_TUNER_GUI_BIN_ABS_PATH := $(abspath $(MTU_TUNER_GUI_BIN_PATH))
-MTU_TUNER_GUI_DIST_OUTPUT_DIR = $(MTU_TUNER_GUI_OUTPUT_DIR)/dist
+MTU_TUNER_GUI_BUILD_TAGS ?= mtu_tuner_embed_frontend
 WINDOWS_GOARCH ?= amd64
 WINDOWS_CC ?=
 WINDOWS_CXX ?=
@@ -43,7 +43,6 @@ MTU_TUNER_PACKAGE_NAME ?= mtu-tuner
 MTU_TUNER_WINDOWS_GUI_BIN_DIR := $(MTU_TUNER_BIN_ROOT)/gui/windows_$(WINDOWS_GOARCH)
 MTU_TUNER_WINDOWS_GUI_BIN_BASE := $(if $(filter %.exe,$(MTU_TUNER_GUI_BIN_NAME)),$(MTU_TUNER_GUI_BIN_NAME),$(MTU_TUNER_GUI_BIN_NAME).exe)
 MTU_TUNER_WINDOWS_GUI_BIN_PATH := $(MTU_TUNER_WINDOWS_GUI_BIN_DIR)/$(MTU_TUNER_WINDOWS_GUI_BIN_BASE)
-MTU_TUNER_WINDOWS_GUI_DIST_DIR := $(MTU_TUNER_WINDOWS_GUI_BIN_DIR)/dist
 MTU_TUNER_WINDOWS_PACKAGE_DIR := $(MTU_TUNER_PACKAGE_ROOT)/gui/windows_$(WINDOWS_GOARCH)/$(MTU_TUNER_PACKAGE_NAME)
 MTU_TUNER_WINDOWS_PACKAGE_ZIP := $(MTU_TUNER_PACKAGE_ROOT)/gui/windows_$(WINDOWS_GOARCH)/$(MTU_TUNER_PACKAGE_NAME)_windows_$(WINDOWS_GOARCH).zip
 # Windows GUI binaries should use the GUI subsystem so launching the app does not open an extra console window.
@@ -100,11 +99,8 @@ mtu-tuner-gui-build: mtu-tuner-gui-frontend-build
 	@mkdir -p $(MTU_TUNER_GUI_OUTPUT_DIR)
 	cd $(MTU_TUNER_DIR) && \
 		$(MTU_TUNER_GO_ENV) CGO_ENABLED=1 GOOS=$(GOOS) GOARCH=$(GOARCH) CC="$(CC)" CXX="$(CXX)" \
-		$(GO) build $(GO_BUILD_FLAGS) -ldflags '$(MTU_TUNER_GUI_LD_FLAGS)' \
+		$(GO) build $(GO_BUILD_FLAGS) -tags '$(MTU_TUNER_GUI_BUILD_TAGS)' -ldflags '$(MTU_TUNER_GUI_LD_FLAGS)' \
 		-o $(MTU_TUNER_GUI_BIN_ABS_PATH) ./cmd/gui
-	@rm -rf $(MTU_TUNER_GUI_DIST_OUTPUT_DIR)
-	@mkdir -p $(MTU_TUNER_GUI_DIST_OUTPUT_DIR)
-	cp -R $(MTU_TUNER_GUI_FRONTEND_DIR)/dist/. $(MTU_TUNER_GUI_DIST_OUTPUT_DIR)/
 
 .PHONY: mtu-tuner-gui-build-windows
 mtu-tuner-gui-build-windows:
@@ -119,9 +115,8 @@ mtu-tuner-gui-build-windows:
 mtu-tuner-gui-package-windows: mtu-tuner-gui-build-windows
 	@echo "-> packaging gui (windows/$(WINDOWS_GOARCH))"
 	@rm -rf $(MTU_TUNER_WINDOWS_PACKAGE_DIR)
-	@mkdir -p $(MTU_TUNER_WINDOWS_PACKAGE_DIR)/dist
+	@mkdir -p $(MTU_TUNER_WINDOWS_PACKAGE_DIR)
 	cp $(MTU_TUNER_WINDOWS_GUI_BIN_PATH) $(MTU_TUNER_WINDOWS_PACKAGE_DIR)/$(MTU_TUNER_PACKAGE_NAME).exe
-	cp -R $(MTU_TUNER_WINDOWS_GUI_DIST_DIR)/. $(MTU_TUNER_WINDOWS_PACKAGE_DIR)/dist/
 	@if command -v zip >/dev/null 2>&1; then \
 		rm -f $(MTU_TUNER_WINDOWS_PACKAGE_ZIP); \
 		cd $(dir $(MTU_TUNER_WINDOWS_PACKAGE_DIR)) && zip -qr $(notdir $(MTU_TUNER_WINDOWS_PACKAGE_ZIP)) $(notdir $(MTU_TUNER_WINDOWS_PACKAGE_DIR)); \

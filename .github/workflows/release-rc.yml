@@ -78,15 +78,15 @@ jobs:
         shell: bash
         run: ${{ matrix.build_command }}
 
-      - name: Package target
+      - name: Stage prerelease asset
         shell: bash
         run: ${{ matrix.package_command }}
 
-      - name: Upload packaged artifact
+      - name: Upload staged asset
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.id }}
-          path: ${{ matrix.archive_path }}
+          path: ${{ matrix.asset_path }}
 
   publish-assets:
     needs:
@@ -94,7 +94,7 @@ jobs:
       - build
     runs-on: ubuntu-24.04
     steps:
-      - name: Download packaged artifacts
+      - name: Download staged assets
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true

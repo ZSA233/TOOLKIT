@@ -17,6 +17,33 @@ afterEach(() => {
   cleanup();
 });
 
+function mockViewportScrollbarWidth(scrollbarWidth: number) {
+  const originalInnerWidth = Object.getOwnPropertyDescriptor(window, "innerWidth");
+  const originalClientWidth = Object.getOwnPropertyDescriptor(
+    document.documentElement,
+    "clientWidth",
+  );
+  const viewportWidth = 1440;
+
+  Object.defineProperty(window, "innerWidth", {
+    configurable: true,
+    value: viewportWidth,
+  });
+  Object.defineProperty(document.documentElement, "clientWidth", {
+    configurable: true,
+    value: viewportWidth - scrollbarWidth,
+  });
+
+  return () => {
+    if (originalInnerWidth) {
+      Object.defineProperty(window, "innerWidth", originalInnerWidth);
+    }
+    if (originalClientWidth) {
+      Object.defineProperty(document.documentElement, "clientWidth", originalClientWidth);
+    }
+  };
+}
+
 const INTERFACE_EN0: InterfaceInfo = {
   platform_name: "Darwin",
   name: "en0",
@@ -866,26 +893,35 @@ describe("DashboardApp", () => {
   it("locks background scroll while the advanced test-target drawer is open", async () => {
     const deps = createMockDeps();
     const user = userEvent.setup();
-    render(<DashboardApp deps={deps} />);
+    const restoreViewport = mockViewportScrollbarWidth(16);
+    try {
+      render(<DashboardApp deps={deps} />);
 
-    expect(document.body.style.overflow).toBe("");
-
-    await screen.findByTestId("boot-state");
-    await user.click(screen.getByRole("button", { name: "Scan" }));
-    await user.click(screen.getByRole("button", { name: "Test Targets" }));
-
-    await waitFor(() => {
-      expect(document.body.style.overflow).toBe("hidden");
-    });
-
-    await user.click(screen.getByRole("button", { name: "Done" }));
-
-    expect(screen.getByRole("dialog", { name: "Advanced Test Targets" })).toBeTruthy();
-
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog", { name: "Advanced Test Targets" })).toBeNull();
       expect(document.body.style.overflow).toBe("");
-    });
+
+      await screen.findByTestId("boot-state");
+      await user.click(screen.getByRole("button", { name: "Scan" }));
+      await user.click(screen.getByRole("button", { name: "Test Targets" }));
+
+      await waitFor(() => {
+        expect(document.body.style.overflow).toBe("hidden");
+        expect(document.body.style.overscrollBehavior).toBe("none");
+        expect(document.body.style.paddingRight).toBe("16px");
+      });
+
+      await user.click(screen.getByRole("button", { name: "Done" }));
+
+      expect(screen.getByRole("dialog", { name: "Advanced Test Targets" })).toBeTruthy();
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog", { name: "Advanced Test Targets" })).toBeNull();
+        expect(document.body.style.overflow).toBe("");
+        expect(document.body.style.overscrollBehavior).toBe("");
+        expect(document.body.style.paddingRight).toBe("");
+      });
+    } finally {
+      restoreViewport();
+    }
   });
 
   it("renders the advanced test-target drawer in a body-level portal", async () => {

@@ -20,12 +20,10 @@
   - macOS `arm64`
   - Windows `amd64`
 
-GUI 产物统一打成包含以下内容的归档：
+CLI 与 GUI 当前都直接发布单可执行文件资产，不再额外附带 `dist/` 目录。
 
-- `mtu-tuner` 或 `mtu-tuner.exe`
-- `dist/` 静态资源目录
-
-CLI 产物为单二进制归档。
+- Windows：直接下载 `.exe`
+- Linux / macOS：直接下载对应平台二进制，下载后如缺少执行权限可先运行 `chmod +x <文件名>`
 
 ## 开发与校验
 
@@ -34,7 +32,7 @@ make mtu-tuner-test GO_TEST_FLAGS=-short
 make mtu-tuner-gui-frontend-build
 make mtu-tuner-gui-build
 make release-validate TOOL=mtu-tuner WORKFLOW=ci
-make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
+make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.2
 ```
 
 ## 发布相关

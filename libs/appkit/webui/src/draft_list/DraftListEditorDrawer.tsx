@@ -87,12 +87,21 @@ export function DraftListEditorDrawer<TItem extends { order: number }>(props: {
 
     const previousOverflow = document.body.style.overflow;
     const previousOverscrollBehavior = document.body.style.overscrollBehavior;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+    const basePaddingRight = Number.parseFloat(window.getComputedStyle(document.body).paddingRight) || 0;
+
+    // Keep the background layout width stable while the drawer locks body scroll.
     document.body.style.overflow = "hidden";
     document.body.style.overscrollBehavior = "none";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${basePaddingRight + scrollbarWidth}px`;
+    }
 
     return () => {
       document.body.style.overflow = previousOverflow;
       document.body.style.overscrollBehavior = previousOverscrollBehavior;
+      document.body.style.paddingRight = previousPaddingRight;
     };
   }, [rendered]);
 

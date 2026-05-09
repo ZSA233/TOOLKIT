@@ -74,8 +74,8 @@ class ReleaseCtlProjectTests(unittest.TestCase):
 
         release_tool = releasectl.load_release_tool("mtu-tuner", REPO_ROOT)
 
-        self.assertEqual(release_tool.stable_tag, "mtu-tuner/v0.0.1")
-        self.assertEqual(release_tool.rc_tag(2), "mtu-tuner/v0.0.1-rc.2")
+        self.assertEqual(release_tool.stable_tag, "mtu-tuner/v0.0.2")
+        self.assertEqual(release_tool.rc_tag(2), "mtu-tuner/v0.0.2-rc.2")
 
     def test_release_matrix_keeps_gui_targets_native(self) -> None:
         releasectl = load_releasectl()
@@ -90,10 +90,39 @@ class ReleaseCtlProjectTests(unittest.TestCase):
         self.assertEqual(entries["gui-windows-amd64"]["runner"], "windows-2022")
         self.assertEqual(entries["gui-windows-amd64"]["goos"], "windows")
 
+    def test_release_matrix_no_longer_bundles_gui_dist_assets(self) -> None:
+        releasectl = load_releasectl()
+
+        matrix = releasectl.github_matrix("mtu-tuner", "release", REPO_ROOT)
+        gui_entries = [entry for entry in matrix["include"] if entry["component"] == "gui"]
+
+        self.assertTrue(gui_entries)
+        self.assertTrue(all(entry["bundle_dist"] is False for entry in gui_entries))
+
+    def test_release_matrix_uses_direct_binary_assets_for_mtu_tuner(self) -> None:
+        releasectl = load_releasectl()
+
+        matrix = releasectl.github_matrix("mtu-tuner", "release", REPO_ROOT)
+        entries = {entry["id"]: entry for entry in matrix["include"]}
+
+        self.assertTrue(all(entry["package_format"] == "binary" for entry in entries.values()))
+        self.assertEqual(
+            entries["cli-linux-amd64"]["asset_name"],
+            "mtu-tuner_cli_linux_amd64",
+        )
+        self.assertEqual(
+            entries["gui-macos-arm64"]["asset_name"],
+            "mtu-tuner_gui_macos_arm64",
+        )
+        self.assertEqual(
+            entries["gui-windows-amd64"]["asset_name"],
+            "mtu-tuner_gui_windows_amd64.exe",
+        )
+
     def test_find_release_tool_by_tag_matches_tag_prefix(self) -> None:
         releasectl = load_releasectl()
 
-        release_tool = releasectl.load_release_tool_by_tag("mtu-tuner/v0.0.1-rc.2", REPO_ROOT)
+        release_tool = releasectl.load_release_tool_by_tag("mtu-tuner/v0.0.2-rc.2", REPO_ROOT)
 
         self.assertEqual(release_tool.id, "mtu-tuner")
 
@@ -405,6 +434,152 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
             with zipfile.ZipFile(archive_path) as archive:
                 self.assertIn("demo-tool/demo-tool.exe", archive.namelist())
                 self.assertIn("demo-tool/dist/index.html", archive.namelist())
+
+    def test_package_binary_target_copies_release_asset_without_archive_wrapper(self) -> None:
+        releasectl = load_releasectl()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir)
+            release_file = repo_root / "services" / "demo_tool" / "release.toml"
+            go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
+            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "demo-tool.exe"
+            binary_path.parent.mkdir(parents=True, exist_ok=True)
+            binary_path.write_text("gui", encoding="utf-8")
+            go_mod_file.parent.mkdir(parents=True, exist_ok=True)
+            go_mod_file.write_text("module demo-tool\n", encoding="utf-8")
+            release_notes.parent.mkdir(parents=True, exist_ok=True)
+            release_notes.write_text("# Demo\n", encoding="utf-8")
+
+            release_file.parent.mkdir(parents=True, exist_ok=True)
+            release_file.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version = 1
+
+                    [tool]
+                    id = "demo-tool"
+                    name = "demo-tool"
+                    version = "1.2.3"
+                    service_dir = "services/demo_tool"
+                    release_notes = "docs/tools/demo.md"
+
+                    [github]
+                    tag_prefix = "demo-tool/v"
+
+                    [[target]]
+                    id = "gui-windows-amd64"
+                    component = "gui"
+                    runner = "windows-2022"
+                    platform = "windows"
+                    arch = "amd64"
+                    goos = "windows"
+                    goarch = "amd64"
+                    package_format = "binary"
+                    workflows = ["release"]
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            asset_path = releasectl.package_target("demo-tool", "gui-windows-amd64", repo_root)
+
+            self.assertEqual(asset_path.name, "demo-tool_gui_windows_amd64.exe")
+            self.assertEqual(asset_path.read_text(encoding="utf-8"), "gui")
+
+    def test_package_binary_target_removes_stale_archive_outputs(self) -> None:
+        releasectl = load_releasectl()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir)
+            release_file = repo_root / "services" / "demo_tool" / "release.toml"
+            go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
+            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "demo-tool.exe"
+            release_root = repo_root / "services" / "demo_tool" / "build" / "release" / "gui" / "windows_amd64"
+            stale_archive_path = release_root / "demo-tool_gui_windows_amd64.zip"
+            stale_bundle_path = release_root / "demo-tool"
+            binary_path.parent.mkdir(parents=True, exist_ok=True)
+            binary_path.write_text("gui", encoding="utf-8")
+            stale_bundle_path.mkdir(parents=True, exist_ok=True)
+            stale_archive_path.parent.mkdir(parents=True, exist_ok=True)
+            stale_archive_path.write_text("old", encoding="utf-8")
+            (stale_bundle_path / "demo-tool.exe").write_text("old", encoding="utf-8")
+            go_mod_file.parent.mkdir(parents=True, exist_ok=True)
+            go_mod_file.write_text("module demo-tool\n", encoding="utf-8")
+            release_notes.parent.mkdir(parents=True, exist_ok=True)
+            release_notes.write_text("# Demo\n", encoding="utf-8")
+
+            release_file.parent.mkdir(parents=True, exist_ok=True)
+            release_file.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version = 1
+
+                    [tool]
+                    id = "demo-tool"
+                    name = "demo-tool"
+                    version = "1.2.3"
+                    service_dir = "services/demo_tool"
+                    release_notes = "docs/tools/demo.md"
+
+                    [github]
+                    tag_prefix = "demo-tool/v"
+
+                    [[target]]
+                    id = "gui-windows-amd64"
+                    component = "gui"
+                    runner = "windows-2022"
+                    platform = "windows"
+                    arch = "amd64"
+                    goos = "windows"
+                    goarch = "amd64"
+                    package_format = "binary"
+                    workflows = ["release"]
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            asset_path = releasectl.package_target("demo-tool", "gui-windows-amd64", repo_root)
+
+            self.assertTrue(asset_path.exists())
+            self.assertFalse(stale_archive_path.exists())
+            self.assertFalse(stale_bundle_path.exists())
+
+    def test_validate_rejects_binary_format_when_bundle_dist_is_enabled(self) -> None:
+        releasectl = load_releasectl()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir)
+            write_release_tool(
+                repo_root,
+                service_name="demo_tool",
+                tool_id="demo-tool",
+                targets_toml=textwrap.dedent(
+                    """
+                    [[target]]
+                    id = "gui-linux-amd64"
+                    component = "gui"
+                    runner = "ubuntu-24.04"
+                    platform = "linux"
+                    arch = "amd64"
+                    goos = "linux"
+                    goarch = "amd64"
+                    package_format = "binary"
+                    bundle_dist = true
+                    workflows = ["release"]
+                    """
+                ).strip(),
+            )
+
+            with self.assertRaisesRegex(
+                releasectl.ReleaseCtlError,
+                "cannot set bundle_dist when package_format is 'binary'",
+            ):
+                releasectl.load_release_tool("demo-tool", repo_root)
 
 
 if __name__ == "__main__":

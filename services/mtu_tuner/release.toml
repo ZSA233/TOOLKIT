@@ -3,7 +3,7 @@ schema_version = 1
 [tool]
 id = "mtu-tuner"
 name = "mtu-tuner"
-version = "0.0.1"
+version = "0.0.2"
 service_dir = "services/mtu_tuner"
 release_notes = "docs/tools/mtu-tuner.md"
 
@@ -18,7 +18,7 @@ platform = "linux"
 arch = "amd64"
 goos = "linux"
 goarch = "amd64"
-package_format = "tar.gz"
+package_format = "binary"
 workflows = ["ci", "release", "release-rc"]
 
 [[target]]
@@ -29,7 +29,7 @@ platform = "macos"
 arch = "arm64"
 goos = "darwin"
 goarch = "arm64"
-package_format = "tar.gz"
+package_format = "binary"
 workflows = ["release", "release-rc"]
 
 [[target]]
@@ -40,7 +40,7 @@ platform = "windows"
 arch = "amd64"
 goos = "windows"
 goarch = "amd64"
-package_format = "zip"
+package_format = "binary"
 workflows = ["release", "release-rc"]
 
 [[target]]
@@ -51,8 +51,7 @@ platform = "linux"
 arch = "amd64"
 goos = "linux"
 goarch = "amd64"
-package_format = "tar.gz"
-bundle_dist = true
+package_format = "binary"
 workflows = ["ci", "release", "release-rc"]
 
 [[target]]
@@ -63,8 +62,7 @@ platform = "macos"
 arch = "arm64"
 goos = "darwin"
 goarch = "arm64"
-package_format = "tar.gz"
-bundle_dist = true
+package_format = "binary"
 workflows = ["ci", "release", "release-rc"]
 
 [[target]]
@@ -75,6 +73,5 @@ platform = "windows"
 arch = "amd64"
 goos = "windows"
 goarch = "amd64"
-package_format = "zip"
-bundle_dist = true
+package_format = "binary"
 workflows = ["ci", "release", "release-rc"]

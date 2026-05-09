@@ -9,7 +9,7 @@
 - 工具对外 ID 与版本号
 - 允许的 Git tag 前缀
 - CI、正式发布、RC 发布分别使用哪些构建目标
-- 每个目标的原生 runner、目标平台和归档格式
+- 每个目标的原生 runner、目标平台和发布资产格式
 - 对应工具的 Go module 与 GUI 前端 lockfile 路径，供 workflow 动态装配依赖
 
 ## Tag 约定
@@ -24,13 +24,13 @@
 ```bash
 make release-validate TOOL=mtu-tuner WORKFLOW=ci
 make release-version-show TOOL=mtu-tuner
-make release-version-stable TOOL=mtu-tuner BASE_VERSION=0.0.1 CHECK=1
-make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.0.1 RC=1 CHECK=1
-make release-tag-check TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
-make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
-make release-local TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
+make release-version-stable TOOL=mtu-tuner BASE_VERSION=0.0.2 CHECK=1
+make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.0.2 RC=1 CHECK=1
+make release-tag-check TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.2
+make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.2
+make release-local TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.2
 make release-matrix TOOL=mtu-tuner WORKFLOW=release
-make release-metadata TOOL=mtu-tuner TAG=mtu-tuner/v0.0.1
+make release-metadata TOOL=mtu-tuner TAG=mtu-tuner/v0.0.2
 ```
 
 这些命令都委托给 [scripts/releasectl.py](../scripts/releasectl.py)，不再在 workflow 或文档里手写重复规则。
@@ -45,14 +45,14 @@ make release-metadata TOOL=mtu-tuner TAG=mtu-tuner/v0.0.1
 - `release.yml`
   - 监听 `*/v*` 正式 tag
   - 根据 tag 反解目标工具
-  - 构建并归档 CLI / GUI 产物
+  - 构建并整理 CLI / GUI 发布资产
   - 创建 GitHub Release 并上传资产
 - `release-rc.yml`
   - 监听 `*/v*-rc.N` tag
   - 根据 tag 反解目标工具
   - 使用同一套构建矩阵，但发布为 prerelease
 
-Linux GUI runner 会在工作流里安装 Wails 所需系统依赖。GUI 发布包统一包含可执行文件和 `dist/` 静态资源目录，避免运行时缺少前端资源。
+Linux GUI runner 会在工作流里安装 Wails 所需系统依赖。当前 `mtu-tuner` 已切到内嵌前端资源，因此 Release 直接上传单二进制资产；Linux / macOS 下载后如缺少执行权限，需要手动 `chmod +x`。
 
 ## 推荐发布步骤
 

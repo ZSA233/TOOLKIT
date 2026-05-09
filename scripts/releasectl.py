@@ -23,6 +23,7 @@ RUNNER_PLATFORM_PREFIX = {
     "macos": "macos-",
     "windows": "windows-",
 }
+SUPPORTED_PACKAGE_FORMATS = {"tar.gz", "zip", "binary"}
 GOOS_TO_PLATFORM = {
     "linux": "linux",
     "darwin": "macos",
@@ -49,6 +50,15 @@ class BuildTarget:
 
     def public_binary_name(self, tool_id: str) -> str:
         return f"{tool_id}.exe" if self.goos == "windows" else tool_id
+
+    def release_asset_stem(self, tool_id: str) -> str:
+        return f"{tool_id}_{self.component}_{self.platform}_{self.arch}"
+
+    def release_asset_name(self, tool_id: str) -> str:
+        base = self.release_asset_stem(tool_id)
+        if self.package_format == "binary":
+            return f"{base}.exe" if self.goos == "windows" else base
+        return f"{base}.{self.package_format}"
 
     @property
     def platform_dir(self) -> str:
@@ -282,7 +292,7 @@ def validate_target(target: BuildTarget) -> None:
         )
     if target.goarch != target.arch:
         raise ReleaseCtlError(f"target {target.id!r} goarch {target.goarch!r} must match arch {target.arch!r}")
-    if target.package_format not in {"tar.gz", "zip"}:
+    if target.package_format not in SUPPORTED_PACKAGE_FORMATS:
         raise ReleaseCtlError(f"target {target.id!r} has unsupported package_format {target.package_format!r}")
     if not set(target.workflows).issubset(ALLOWED_WORKFLOWS):
         raise ReleaseCtlError(f"target {target.id!r} has unsupported workflows {target.workflows!r}")
@@ -292,6 +302,10 @@ def validate_target(target: BuildTarget) -> None:
         )
     if target.component == "cli" and target.bundle_dist:
         raise ReleaseCtlError(f"target {target.id!r} cannot set bundle_dist for a CLI release")
+    if target.package_format == "binary" and target.bundle_dist:
+        raise ReleaseCtlError(
+            f"target {target.id!r} cannot set bundle_dist when package_format is 'binary'"
+        )
 
 
 def metadata(tool_id: str, repo_root: Path | str | None = None, tag: str | None = None) -> dict[str, Any]:
@@ -360,7 +374,7 @@ def host_matrix(tool_id: str, workflow: str, host_goos: str, repo_root: Path | s
 def target_matrix_entry(release_tool: ReleaseTool, target: BuildTarget) -> dict[str, Any]:
     build_root = release_tool.service_dir / "build" / "bin" / target.build_subdir / target.platform_dir
     release_root = release_tool.service_dir / "build" / "release" / target.build_subdir / target.platform_dir
-    archive_name = f"{release_tool.id}_{target.component}_{target.platform}_{target.arch}.{target.package_format}"
+    asset_name = target.release_asset_name(release_tool.id)
     return {
         "tool": release_tool.id,
         "id": target.id,
@@ -375,9 +389,9 @@ def target_matrix_entry(release_tool: ReleaseTool, target: BuildTarget) -> dict[
         "binary_path": (build_root / target.public_binary_name(release_tool.id)).as_posix(),
         "dist_path": (build_root / "dist").as_posix(),
         "bundle_dir": (release_root / release_tool.id).as_posix(),
-        "archive_path": (release_root / archive_name).as_posix(),
-        "archive_name": archive_name,
-        "artifact_name": archive_name,
+        "asset_path": (release_root / asset_name).as_posix(),
+        "asset_name": asset_name,
+        "artifact_name": asset_name,
         "package_format": target.package_format,
         "bundle_dist": target.bundle_dist,
         "needs_linux_gui_deps": target.component == "gui" and target.goos == "linux",
@@ -409,13 +423,21 @@ def package_target(tool_id: str, target_id: str, repo_root: Path | str | None = 
     binary_path = resolved_root / target_entry["binary_path"]
     dist_path = resolved_root / target_entry["dist_path"]
     bundle_dir = resolved_root / target_entry["bundle_dir"]
-    archive_path = resolved_root / target_entry["archive_path"]
-    stage_root = archive_path.parent
+    asset_path = resolved_root / target_entry["asset_path"]
 
     if not binary_path.exists():
         raise ReleaseCtlError(f"missing binary for target {target_id!r}: {binary_path}")
     if target.bundle_dist and not dist_path.exists():
         raise ReleaseCtlError(f"missing GUI dist assets for target {target_id!r}: {dist_path}")
+
+    cleanup_stale_release_outputs(asset_path.parent, bundle_dir, target.release_asset_stem(release_tool.id))
+    asset_path.parent.mkdir(parents=True, exist_ok=True)
+    if asset_path.exists():
+        asset_path.unlink()
+
+    if target.package_format == "binary":
+        shutil.copy2(binary_path, asset_path)
+        return asset_path
 
     if bundle_dir.exists():
         shutil.rmtree(bundle_dir)
@@ -424,14 +446,23 @@ def package_target(tool_id: str, target_id: str, repo_root: Path | str | None = 
     if target.bundle_dist:
         shutil.copytree(dist_path, bundle_dir / "dist")
 
-    if archive_path.exists():
-        archive_path.unlink()
-    archive_path.parent.mkdir(parents=True, exist_ok=True)
     if target.package_format == "zip":
-        write_zip_archive(bundle_dir, archive_path)
+        write_zip_archive(bundle_dir, asset_path)
     else:
-        write_tar_archive(bundle_dir, archive_path)
-    return archive_path
+        write_tar_archive(bundle_dir, asset_path)
+    return asset_path
+
+
+def cleanup_stale_release_outputs(release_root: Path, bundle_dir: Path, asset_stem: str) -> None:
+    if bundle_dir.exists():
+        shutil.rmtree(bundle_dir)
+    if not release_root.exists():
+        return
+    for candidate in release_root.glob(f"{asset_stem}*"):
+        if candidate.is_dir():
+            shutil.rmtree(candidate)
+        else:
+            candidate.unlink()
 
 
 def write_zip_archive(bundle_dir: Path, archive_path: Path) -> None:
@@ -534,8 +565,8 @@ def main(argv: list[str] | None = None) -> int:
             print(make_output(host_matrix(args.tool, args.workflow, args.goos, repo_root)))
             return 0
         if args.command == "package":
-            archive_path = package_target(args.tool, args.target, repo_root)
-            print(make_output({"archive_path": archive_path.as_posix()}))
+            asset_path = package_target(args.tool, args.target, repo_root)
+            print(make_output({"asset_path": asset_path.as_posix()}))
             return 0
         if args.command == "tool-from-tag":
             print(load_release_tool_by_tag(args.tag, repo_root).id)
