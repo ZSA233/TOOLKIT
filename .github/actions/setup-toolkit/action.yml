@@ -13,7 +13,7 @@ inputs:
     default: "20"
   pnpm-version:
     description: pnpm version for GUI frontend builds.
-    default: "9"
+    default: "10"
   pnpm-lock-file:
     description: Path to the frontend pnpm lockfile used for cache lookup.
     default: services/mtu_tuner/cmd/gui/frontend/pnpm-lock.yaml
