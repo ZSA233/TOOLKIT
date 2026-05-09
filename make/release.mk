@@ -19,7 +19,7 @@ endef
 
 define require_release_tag
 	@if [ -z "$(RELEASE_TAG)" ]; then \
-		echo "RELEASE_TAG is required, for example: make $(1) TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.1.0"; \
+		echo "RELEASE_TAG is required, for example: make $(1) TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1"; \
 		exit 1; \
 	fi
 endef
@@ -56,7 +56,7 @@ release-version-stable:
 release-version-rc:
 	$(call require_release_tool,release-version-rc)
 	@if [ -z "$(RC)" ]; then \
-		echo "RC is required, for example: make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.1.0 RC=1 CHECK=1"; \
+		echo "RC is required, for example: make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.0.1 RC=1 CHECK=1"; \
 		exit 1; \
 	fi
 	@version="$$( $(RELEASECTL) version --tool $(TOOL) )"; \

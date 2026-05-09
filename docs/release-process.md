@@ -24,13 +24,13 @@
 ```bash
 make release-validate TOOL=mtu-tuner WORKFLOW=ci
 make release-version-show TOOL=mtu-tuner
-make release-version-stable TOOL=mtu-tuner BASE_VERSION=0.1.0 CHECK=1
-make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.1.0 RC=1 CHECK=1
-make release-tag-check TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.1.0
-make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.1.0
-make release-local TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.1.0
+make release-version-stable TOOL=mtu-tuner BASE_VERSION=0.0.1 CHECK=1
+make release-version-rc TOOL=mtu-tuner BASE_VERSION=0.0.1 RC=1 CHECK=1
+make release-tag-check TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
+make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
+make release-local TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
 make release-matrix TOOL=mtu-tuner WORKFLOW=release
-make release-metadata TOOL=mtu-tuner TAG=mtu-tuner/v0.1.0
+make release-metadata TOOL=mtu-tuner TAG=mtu-tuner/v0.0.1
 ```
 
 这些命令都委托给 [scripts/releasectl.py](../scripts/releasectl.py)，不再在 workflow 或文档里手写重复规则。

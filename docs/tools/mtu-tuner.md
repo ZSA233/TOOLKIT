@@ -34,7 +34,7 @@ make mtu-tuner-test GO_TEST_FLAGS=-short
 make mtu-tuner-gui-frontend-build
 make mtu-tuner-gui-build
 make release-validate TOOL=mtu-tuner WORKFLOW=ci
-make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.1.0
+make release-preflight TOOL=mtu-tuner RELEASE_TAG=mtu-tuner/v0.0.1
 ```
 
 ## 发布相关
