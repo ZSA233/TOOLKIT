@@ -41,9 +41,17 @@
 - React 页面按功能拆到 `src/features/{feature}`，主入口保持薄。
 - 单页工具也不要把状态、事件订阅、布局、表单和日志逻辑长期堆在一个超大文件里。
 
-## 6. 修改前自检
+## 6. 文档维护
+
+- `services/mtu_tuner/README.md` 只作为子项目入口，可保留工具定位、适用场景、核心目录、常用命令和中英文详细文档链接，不承载详细开发流程、发布流程或一次性变更说明。
+- mtu-tuner 的长期工具说明维护在仓库级 `docs/zh/tools/mtu-tuner.md` 与 `docs/en/tools/mtu-tuner.md`，两侧内容必须同步表达同一组事实。
+- `api-blueprint` 版本、包来源覆盖、本地工具源码覆盖等生成工具链细节，应由 `make/mtu-tuner.mk`、生成配置或专门工具文档承载，不写入子项目 README。
+- 打包、发布资产、平台矩阵和 tag 规则以 `release.toml` 与仓库发布文档为准；README 只链接这些真源，不重复展开细节。
+
+## 7. 修改前自检
 
 - 本次改动是否保持了项目可迁出的独立性，没有偷偷依赖 monorepo 业务代码。
 - 是否通过 Blueprint 真源驱动生成，而不是手改生成产物。
 - `cmd/cli`、`cmd/gui`、frontend 入口是否仍然保持薄。
 - Go 文件名和前端 feature 是否能让 reviewer 快速定位入口与职责。
+- 如果改动了 README 或长期文档，是否保持子项目 README 只表达稳定入口、核心命令和导航，并同步更新 `docs/zh/` 与 `docs/en/` 的镜像内容。

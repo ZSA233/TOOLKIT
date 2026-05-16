@@ -5,7 +5,7 @@ id = "mtu-tuner"
 name = "mtu-tuner"
 version = "0.0.3"
 service_dir = "services/mtu_tuner"
-release_notes = "docs/tools/mtu-tuner.md"
+release_notes = "docs/zh/tools/mtu-tuner.md"
 
 [github]
 tag_prefix = "mtu-tuner/v"

@@ -33,7 +33,7 @@ def write_release_tool(
     release_notes_path: str | None = None,
     targets_toml: str,
 ) -> None:
-    release_notes_rel = release_notes_path or f"docs/tools/{tool_id}.md"
+    release_notes_rel = release_notes_path or f"docs/zh/tools/{tool_id}.md"
     service_dir = repo_root / "services" / service_name
     release_file = service_dir / "release.toml"
     go_mod_file = service_dir / "go.mod"
@@ -331,7 +331,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
             repo_root = Path(tmpdir)
             release_file = repo_root / "services" / "demo_tool" / "release.toml"
             go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
-            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            release_notes = repo_root / "docs" / "zh" / "tools" / "demo.md"
             binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "cli" / "linux_amd64" / "demo-tool"
             binary_path.parent.mkdir(parents=True, exist_ok=True)
             binary_path.write_text("cli", encoding="utf-8")
@@ -351,7 +351,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
                     name = "demo-tool"
                     version = "1.2.3"
                     service_dir = "services/demo_tool"
-                    release_notes = "docs/tools/demo.md"
+                    release_notes = "docs/zh/tools/demo.md"
 
                     [github]
                     tag_prefix = "demo-tool/v"
@@ -384,7 +384,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
             repo_root = Path(tmpdir)
             release_file = repo_root / "services" / "demo_tool" / "release.toml"
             go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
-            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            release_notes = repo_root / "docs" / "zh" / "tools" / "demo.md"
             binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "demo-tool.exe"
             dist_asset_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "dist" / "index.html"
             binary_path.parent.mkdir(parents=True, exist_ok=True)
@@ -407,7 +407,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
                     name = "demo-tool"
                     version = "1.2.3"
                     service_dir = "services/demo_tool"
-                    release_notes = "docs/tools/demo.md"
+                    release_notes = "docs/zh/tools/demo.md"
 
                     [github]
                     tag_prefix = "demo-tool/v"
@@ -442,7 +442,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
             repo_root = Path(tmpdir)
             release_file = repo_root / "services" / "demo_tool" / "release.toml"
             go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
-            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            release_notes = repo_root / "docs" / "zh" / "tools" / "demo.md"
             binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "demo-tool.exe"
             binary_path.parent.mkdir(parents=True, exist_ok=True)
             binary_path.write_text("gui", encoding="utf-8")
@@ -462,7 +462,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
                     name = "demo-tool"
                     version = "1.2.3"
                     service_dir = "services/demo_tool"
-                    release_notes = "docs/tools/demo.md"
+                    release_notes = "docs/zh/tools/demo.md"
 
                     [github]
                     tag_prefix = "demo-tool/v"
@@ -495,7 +495,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
             repo_root = Path(tmpdir)
             release_file = repo_root / "services" / "demo_tool" / "release.toml"
             go_mod_file = repo_root / "services" / "demo_tool" / "go.mod"
-            release_notes = repo_root / "docs" / "tools" / "demo.md"
+            release_notes = repo_root / "docs" / "zh" / "tools" / "demo.md"
             binary_path = repo_root / "services" / "demo_tool" / "build" / "bin" / "gui" / "windows_amd64" / "demo-tool.exe"
             release_root = repo_root / "services" / "demo_tool" / "build" / "release" / "gui" / "windows_amd64"
             stale_archive_path = release_root / "demo-tool_gui_windows_amd64.zip"
@@ -522,7 +522,7 @@ class ReleaseCtlPackagingTests(unittest.TestCase):
                     name = "demo-tool"
                     version = "1.2.3"
                     service_dir = "services/demo_tool"
-                    release_notes = "docs/tools/demo.md"
+                    release_notes = "docs/zh/tools/demo.md"
 
                     [github]
                     tag_prefix = "demo-tool/v"
