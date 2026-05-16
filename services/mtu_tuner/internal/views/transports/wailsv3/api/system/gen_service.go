@@ -30,7 +30,7 @@ func newGeneratedSystemService(impl RouterInterface, dispatcher wailstransport.E
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.GetSystemStatus,
 		),
 	}
@@ -45,7 +45,7 @@ func (svc *SystemService) SetConnectionHub(hub wailstransport.ConnectionHub) {
 
 func (svc *SystemService) GetSystemStatus(
 	envelope *INVOKE_GetSystemStatus,
-) (rsp *RSP_GetSystemStatus, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_GetSystemStatus], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  false,
@@ -67,5 +67,5 @@ func (svc *SystemService) GetSystemStatus(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }

@@ -7,7 +7,7 @@ import type { DashboardNoticeTone, DashboardState } from "../types";
 import type {
   DefaultConnectionClose,
   SystemStatus,
-} from "../../../lib/api/api/runtime/models";
+} from "../../../lib/api/api/runtime/types";
 
 const TASK_EVENTS_WARNING_PREFIX = "Task event stream";
 

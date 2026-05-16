@@ -70,6 +70,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    testTimeout: 10000,
     include: [
       "src/**/*.test.ts",
       "src/**/*.test.tsx",

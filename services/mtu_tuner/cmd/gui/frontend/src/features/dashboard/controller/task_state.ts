@@ -1,6 +1,6 @@
 import { DEFAULT_TASK_PROGRESS } from "../constants";
 import type { TaskLogEvent, TaskProgressEvent } from "../types";
-import type { TaskState } from "../../../lib/api/api/runtime/models";
+import type { TaskState } from "../../../lib/api/api/runtime/types";
 
 export function isTaskBusy(status: string): boolean {
   return status === "running" || status === "stopping";

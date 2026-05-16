@@ -2,13 +2,13 @@ package settings
 
 import (
 	"mtu-tuner/internal/core"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	apitypes "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
-func savedSettingsProto(settings core.SavedSettings) *protos.SavedSettings {
-	targets := make([]*protos.TestTarget, 0, len(settings.TestTargets))
+func savedSettingsDTO(settings core.SavedSettings) *apitypes.SavedSettings {
+	targets := make([]*apitypes.TestTarget, 0, len(settings.TestTargets))
 	for _, target := range settings.TestTargets {
-		targets = append(targets, &protos.TestTarget{
+		targets = append(targets, &apitypes.TestTarget{
 			Name:     target.Name,
 			Url:      target.URL,
 			Enabled:  target.Enabled,
@@ -16,7 +16,7 @@ func savedSettingsProto(settings core.SavedSettings) *protos.SavedSettings {
 			Order:    target.Order,
 		})
 	}
-	return &protos.SavedSettings{
+	return &apitypes.SavedSettings{
 		Version:       settings.Version,
 		RouteProbe:    settings.RouteProbe,
 		FallbackProbe: settings.FallbackProbe,
@@ -32,7 +32,7 @@ func savedSettingsProto(settings core.SavedSettings) *protos.SavedSettings {
 	}
 }
 
-func savedSettingsCore(settings *protos.SavedSettings) core.SavedSettings {
+func savedSettingsCore(settings *apitypes.SavedSettings) core.SavedSettings {
 	if settings == nil {
 		return core.DefaultSavedSettings()
 	}

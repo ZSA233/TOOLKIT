@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"mtu-tuner/internal/core"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	apitypes "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
 func TestInterfaceRefCoreMapsStableIdentityFields(t *testing.T) {
 	t.Parallel()
 
-	ref := &protos.InterfaceRef{
+	ref := &apitypes.InterfaceRef{
 		PlatformName: "Windows",
 		Name:         "Wi-Fi",
 		Index:        "12",

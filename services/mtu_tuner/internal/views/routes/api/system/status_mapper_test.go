@@ -18,7 +18,7 @@ func TestSystemStatusProtoMapsAppStatusFields(t *testing.T) {
 		CurrentTaskStatus:     core.TaskStatusRunning,
 	}
 
-	got := systemStatusProto(status)
+	got := systemStatusDTO(status)
 	if got.PlatformName != status.PlatformName {
 		t.Fatalf("PlatformName = %q, want %q", got.PlatformName, status.PlatformName)
 	}

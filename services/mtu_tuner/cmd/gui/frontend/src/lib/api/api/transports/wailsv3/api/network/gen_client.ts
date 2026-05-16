@@ -6,9 +6,7 @@ import type { ApiClientConfig } from "../../../../runtime/client";
 import { WailsV3Transport } from "../../transport";
 import { NetworkClient as SharedNetworkClient } from "../../../../routes/api/network/client";
 
-
 export type NetworkClient = SharedNetworkClient;
-
 
 export function createClient(config: ApiClientConfig = {}): NetworkClient {
   return new SharedNetworkClient({

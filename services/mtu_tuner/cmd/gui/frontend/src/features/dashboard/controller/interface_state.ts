@@ -1,4 +1,4 @@
-import type { InterfaceInfo, InterfaceRef } from "../../../lib/api/api/runtime/models";
+import type { InterfaceInfo, InterfaceRef } from "../../../lib/api/api/runtime/types";
 
 export function toInterfaceRef(info: InterfaceInfo): InterfaceRef {
   return {

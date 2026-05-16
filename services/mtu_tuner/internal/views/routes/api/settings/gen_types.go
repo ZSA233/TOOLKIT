@@ -4,7 +4,7 @@ package settings
 
 import (
 	providers "mtu-tuner/internal/views/providers"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	types "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
 type REQ_GetCurrentSettings = providers.REQ[
@@ -12,7 +12,7 @@ type REQ_GetCurrentSettings = providers.REQ[
 	any,
 ]
 
-type RSP_GetCurrentSettings_BODY = protos.SavedSettings
+type RSP_GetCurrentSettings_BODY = types.SavedSettings
 
 type RSP_GetCurrentSettings = RSP_GetCurrentSettings_BODY
 
@@ -22,14 +22,14 @@ type CTX_GetCurrentSettings = providers.Context[
 	RSP_GetCurrentSettings_BODY,
 ]
 
-type REQ_SaveCurrentSettings_JSON = protos.CurrentSettingsRequest
+type REQ_SaveCurrentSettings_JSON = types.CurrentSettingsRequest
 
 type REQ_SaveCurrentSettings = providers.REQ[
 	any,
 	REQ_SaveCurrentSettings_JSON,
 ]
 
-type RSP_SaveCurrentSettings_BODY = protos.SavedSettings
+type RSP_SaveCurrentSettings_BODY = types.SavedSettings
 
 type RSP_SaveCurrentSettings = RSP_SaveCurrentSettings_BODY
 

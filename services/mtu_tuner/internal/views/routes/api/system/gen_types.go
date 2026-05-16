@@ -4,7 +4,7 @@ package system
 
 import (
 	providers "mtu-tuner/internal/views/providers"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	types "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
 type REQ_GetSystemStatus = providers.REQ[
@@ -12,7 +12,7 @@ type REQ_GetSystemStatus = providers.REQ[
 	any,
 ]
 
-type RSP_GetSystemStatus_BODY = protos.SystemStatus
+type RSP_GetSystemStatus_BODY = types.SystemStatus
 
 type RSP_GetSystemStatus = RSP_GetSystemStatus_BODY
 

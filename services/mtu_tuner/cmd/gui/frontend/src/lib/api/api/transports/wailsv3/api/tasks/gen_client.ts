@@ -6,9 +6,7 @@ import type { ApiClientConfig } from "../../../../runtime/client";
 import { WailsV3Transport } from "../../transport";
 import { TasksClient as SharedTasksClient } from "../../../../routes/api/tasks/client";
 
-
 export type TasksClient = SharedTasksClient;
-
 
 export function createClient(config: ApiClientConfig = {}): TasksClient {
   return new SharedTasksClient({

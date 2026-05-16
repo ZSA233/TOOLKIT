@@ -23,4 +23,4 @@ help:
 	@echo "  release-package              Package one release target after it has been built"
 	@echo ""
 	@echo "Common overrides: TOOL=$(TOOL) CMD=$(CMD) BIN_NAME=$(BIN_NAME) GOOS=$(GOOS) GOARCH=$(GOARCH) TARGET=$(TARGET) RC=$(RC) WORKFLOW=$(WORKFLOW) RELEASE_TAG=$(RELEASE_TAG)"
-	@echo "API blueprint override: API_BLUEPRINT_PROJECT=$(API_BLUEPRINT_PROJECT)"
+	@echo "API blueprint overrides: API_BLUEPRINT_VERSION=$(API_BLUEPRINT_VERSION) API_BLUEPRINT_PACKAGE=$(API_BLUEPRINT_PACKAGE) API_BLUEPRINT_PROJECT=$(API_BLUEPRINT_PROJECT)"

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 
 	providers "mtu-tuner/internal/views/providers"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	types "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
 type REQ_GetCurrentTask = providers.REQ[
@@ -14,7 +14,7 @@ type REQ_GetCurrentTask = providers.REQ[
 	any,
 ]
 
-type RSP_GetCurrentTask_BODY = protos.TaskState
+type RSP_GetCurrentTask_BODY = types.TaskState
 
 type RSP_GetCurrentTask = RSP_GetCurrentTask_BODY
 
@@ -24,7 +24,7 @@ type CTX_GetCurrentTask = providers.Context[
 	RSP_GetCurrentTask_BODY,
 ]
 
-type OPEN_TaskEvents = protos.TaskEventsOpen
+type OPEN_TaskEvents = types.TaskEventsOpen
 
 type REQ_TaskEvents = providers.REQ[
 	OPEN_TaskEvents,
@@ -39,22 +39,22 @@ type CTX_TaskEvents = providers.Context[
 	any,
 ]
 
-type TaskEventMessage_State_DATA = protos.TaskState
+type TaskEventMessage_State_DATA = types.TaskState
 
-type TaskEventMessage_Progress_DATA = protos.TaskProgress
+type TaskEventMessage_Progress_DATA = types.TaskProgress
 
-type TaskEventMessage_Log_DATA = protos.TaskLog
+type TaskEventMessage_Log_DATA = types.TaskLog
 
-type CLOSE_TaskEvents = protos.DefaultConnectionClose
+type CLOSE_TaskEvents = types.DefaultConnectionClose
 
-type REQ_StartConnectivityTest_JSON = protos.ConnectivityTestRequest
+type REQ_StartConnectivityTest_JSON = types.ConnectivityTestRequest
 
 type REQ_StartConnectivityTest = providers.REQ[
 	any,
 	REQ_StartConnectivityTest_JSON,
 ]
 
-type RSP_StartConnectivityTest_BODY = protos.StartTaskResponse
+type RSP_StartConnectivityTest_BODY = types.StartTaskResponse
 
 type RSP_StartConnectivityTest = RSP_StartConnectivityTest_BODY
 
@@ -64,14 +64,14 @@ type CTX_StartConnectivityTest = providers.Context[
 	RSP_StartConnectivityTest_BODY,
 ]
 
-type REQ_StartMtuSweep_JSON = protos.MtuSweepRequest
+type REQ_StartMtuSweep_JSON = types.MtuSweepRequest
 
 type REQ_StartMtuSweep = providers.REQ[
 	any,
 	REQ_StartMtuSweep_JSON,
 ]
 
-type RSP_StartMtuSweep_BODY = protos.StartTaskResponse
+type RSP_StartMtuSweep_BODY = types.StartTaskResponse
 
 type RSP_StartMtuSweep = RSP_StartMtuSweep_BODY
 
@@ -86,7 +86,7 @@ type REQ_CancelCurrentTask = providers.REQ[
 	any,
 ]
 
-type RSP_CancelCurrentTask_BODY = protos.CancelTaskResponse
+type RSP_CancelCurrentTask_BODY = types.CancelTaskResponse
 
 type RSP_CancelCurrentTask = RSP_CancelCurrentTask_BODY
 

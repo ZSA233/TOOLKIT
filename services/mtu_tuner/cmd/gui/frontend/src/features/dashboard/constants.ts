@@ -1,4 +1,4 @@
-import type { SavedSettings, TaskState } from "../../lib/api/api/runtime/models";
+import type { SavedSettings, TaskState } from "../../lib/api/api/runtime/types";
 
 import type {
   SessionSettings,

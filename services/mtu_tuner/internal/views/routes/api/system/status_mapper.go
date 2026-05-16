@@ -2,11 +2,11 @@ package system
 
 import (
 	"mtu-tuner/internal/core"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	apitypes "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
-func systemStatusProto(status core.SystemStatus) *protos.SystemStatus {
-	return &protos.SystemStatus{
+func systemStatusDTO(status core.SystemStatus) *apitypes.SystemStatus {
+	return &apitypes.SystemStatus{
 		PlatformName:          status.PlatformName,
 		IsAdmin:               status.IsAdmin,
 		SupportsPersistentMtu: status.SupportsPersistentMTU,

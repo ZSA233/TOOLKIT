@@ -20,7 +20,7 @@ func NewRouter() *Router {
 }
 
 func (impl *Router) GetCurrentTask(ctx *CTX_GetCurrentTask, req *REQ_GetCurrentTask) (rsp *RSP_GetCurrentTask, err error) {
-	return taskStateProto(impl.service.TaskState(ctx)), nil
+	return taskStateDTO(impl.service.TaskState(ctx)), nil
 }
 
 func (impl *Router) TaskEvents(
@@ -82,7 +82,7 @@ func (impl *Router) StartConnectivityTest(ctx *CTX_StartConnectivityTest, req *R
 		return nil, err
 	}
 	return &RSP_StartConnectivityTest{
-		State: taskStateProto(state),
+		State: taskStateDTO(state),
 	}, nil
 }
 
@@ -103,12 +103,12 @@ func (impl *Router) StartMtuSweep(ctx *CTX_StartMtuSweep, req *REQ_StartMtuSweep
 		return nil, err
 	}
 	return &RSP_StartMtuSweep{
-		State: taskStateProto(state),
+		State: taskStateDTO(state),
 	}, nil
 }
 
 func (impl *Router) CancelCurrentTask(ctx *CTX_CancelCurrentTask, req *REQ_CancelCurrentTask) (rsp *RSP_CancelCurrentTask, err error) {
 	return &RSP_CancelCurrentTask{
-		State: taskStateProto(impl.service.CancelTask()),
+		State: taskStateDTO(impl.service.CancelTask()),
 	}, nil
 }

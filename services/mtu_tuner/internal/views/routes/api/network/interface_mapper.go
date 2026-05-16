@@ -2,12 +2,12 @@ package network
 
 import (
 	"mtu-tuner/internal/core"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	apitypes "mtu-tuner/internal/views/routes/api/_gen_types"
 	sharedroute "mtu-tuner/internal/views/routes/api/shared"
 )
 
-func interfaceInfoProto(info core.InterfaceInfo) *protos.InterfaceInfo {
-	return &protos.InterfaceInfo{
+func interfaceInfoDTO(info core.InterfaceInfo) *apitypes.InterfaceInfo {
+	return &apitypes.InterfaceInfo{
 		PlatformName: info.PlatformName,
 		Name:         info.Name,
 		Index:        info.Index,
@@ -18,21 +18,21 @@ func interfaceInfoProto(info core.InterfaceInfo) *protos.InterfaceInfo {
 	}
 }
 
-func interfaceInfoListProto(values []core.InterfaceInfo) []*protos.InterfaceInfo {
+func interfaceInfoListDTO(values []core.InterfaceInfo) []*apitypes.InterfaceInfo {
 	if len(values) == 0 {
-		return []*protos.InterfaceInfo{}
+		return []*apitypes.InterfaceInfo{}
 	}
-	items := make([]*protos.InterfaceInfo, 0, len(values))
+	items := make([]*apitypes.InterfaceInfo, 0, len(values))
 	for _, value := range values {
-		items = append(items, interfaceInfoProto(value))
+		items = append(items, interfaceInfoDTO(value))
 	}
 	return items
 }
 
 // Mutation routes now send only a stable interface identity, so preserve just
 // the fields the app layer uses to look the interface back up.
-func clashTargetProto(target core.ClashTarget) *protos.ClashTarget {
-	return &protos.ClashTarget{
+func clashTargetDTO(target core.ClashTarget) *apitypes.ClashTarget {
+	return &apitypes.ClashTarget{
 		Group:      target.Group,
 		Leaf:       target.Leaf,
 		Server:     target.Server,
@@ -43,25 +43,25 @@ func clashTargetProto(target core.ClashTarget) *protos.ClashTarget {
 	}
 }
 
-func probeSelectionProto(selection core.ProbeSelection) *protos.ProbeSelection {
-	result := &protos.ProbeSelection{
+func probeSelectionDTO(selection core.ProbeSelection) *apitypes.ProbeSelection {
+	result := &apitypes.ProbeSelection{
 		ProbeIp: selection.ProbeIP,
 		Warning: selection.Warning,
 	}
 	if selection.Target != nil {
-		result.Target = clashTargetProto(*selection.Target)
+		result.Target = clashTargetDTO(*selection.Target)
 	}
 	return result
 }
 
-func interfaceCommandResultProto(result core.InterfaceCommandResult) *protos.InterfaceCommandResult {
-	return &protos.InterfaceCommandResult{
-		Interface:   interfaceInfoProto(result.Interface),
+func interfaceCommandResultDTO(result core.InterfaceCommandResult) *apitypes.InterfaceCommandResult {
+	return &apitypes.InterfaceCommandResult{
+		Interface:   interfaceInfoDTO(result.Interface),
 		Output:      result.Output,
 		OriginalMtu: result.OriginalMTU,
 	}
 }
 
-func interfaceRefCore(info *protos.InterfaceRef) core.InterfaceInfo {
+func interfaceRefCore(info *apitypes.InterfaceRef) core.InterfaceInfo {
 	return sharedroute.InterfaceRefCore(info)
 }

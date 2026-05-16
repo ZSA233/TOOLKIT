@@ -5,20 +5,20 @@ import (
 
 	"mtu-tuner/internal/core"
 	providers "mtu-tuner/internal/views/providers"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	apitypes "mtu-tuner/internal/views/routes/api/_gen_types"
 	sharedroute "mtu-tuner/internal/views/routes/api/shared"
 )
 
-func taskStateProto(state core.TaskState) *protos.TaskState {
-	return &protos.TaskState{
+func taskStateDTO(state core.TaskState) *apitypes.TaskState {
+	return &apitypes.TaskState{
 		Kind:            state.Kind,
 		Status:          state.Status,
 		CancelRequested: state.CancelRequested,
 	}
 }
 
-func taskProgressProto(progress core.TaskProgress) *protos.TaskProgress {
-	return &protos.TaskProgress{
+func taskProgressDTO(progress core.TaskProgress) *apitypes.TaskProgress {
+	return &apitypes.TaskProgress{
 		Kind:  progress.Kind,
 		Done:  progress.Done,
 		Total: progress.Total,
@@ -26,8 +26,8 @@ func taskProgressProto(progress core.TaskProgress) *protos.TaskProgress {
 	}
 }
 
-func taskLogProto(log core.TaskLog) *protos.TaskLog {
-	return &protos.TaskLog{
+func taskLogDTO(log core.TaskLog) *apitypes.TaskLog {
+	return &apitypes.TaskLog{
 		Kind: log.Kind,
 		Line: log.Line,
 		Ts:   log.TS,
@@ -37,11 +37,11 @@ func taskLogProto(log core.TaskLog) *protos.TaskLog {
 func taskEventMessage(event core.TaskEvent) (*TaskEventMessage, error) {
 	switch payload := event.(type) {
 	case core.TaskState:
-		return NewTaskEventMessageState(taskStateProto(payload))
+		return NewTaskEventMessageState(taskStateDTO(payload))
 	case core.TaskProgress:
-		return NewTaskEventMessageProgress(taskProgressProto(payload))
+		return NewTaskEventMessageProgress(taskProgressDTO(payload))
 	case core.TaskLog:
-		return NewTaskEventMessageLog(taskLogProto(payload))
+		return NewTaskEventMessageLog(taskLogDTO(payload))
 	default:
 		return nil, errors.New("unsupported task event payload")
 	}
@@ -58,6 +58,6 @@ func abortTaskEvents(
 	return nil
 }
 
-func taskInterfaceRefCore(info *protos.InterfaceRef) core.InterfaceInfo {
+func taskInterfaceRefCore(info *apitypes.InterfaceRef) core.InterfaceInfo {
 	return sharedroute.InterfaceRefCore(info)
 }
