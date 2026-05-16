@@ -74,8 +74,8 @@ class ReleaseCtlProjectTests(unittest.TestCase):
 
         release_tool = releasectl.load_release_tool("mtu-tuner", REPO_ROOT)
 
-        self.assertEqual(release_tool.stable_tag, "mtu-tuner/v0.0.3")
-        self.assertEqual(release_tool.rc_tag(2), "mtu-tuner/v0.0.3-rc.2")
+        self.assertEqual(release_tool.stable_tag, "mtu-tuner/v0.0.4")
+        self.assertEqual(release_tool.rc_tag(2), "mtu-tuner/v0.0.4-rc.2")
 
     def test_release_matrix_keeps_gui_targets_native(self) -> None:
         releasectl = load_releasectl()
