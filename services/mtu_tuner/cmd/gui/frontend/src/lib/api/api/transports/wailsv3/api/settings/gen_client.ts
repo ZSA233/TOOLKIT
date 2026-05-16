@@ -6,9 +6,7 @@ import type { ApiClientConfig } from "../../../../runtime/client";
 import { WailsV3Transport } from "../../transport";
 import { SettingsClient as SharedSettingsClient } from "../../../../routes/api/settings/client";
 
-
 export type SettingsClient = SharedSettingsClient;
-
 
 export function createClient(config: ApiClientConfig = {}): SettingsClient {
   return new SharedSettingsClient({

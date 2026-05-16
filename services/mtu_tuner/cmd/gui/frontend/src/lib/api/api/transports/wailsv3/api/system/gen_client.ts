@@ -6,9 +6,7 @@ import type { ApiClientConfig } from "../../../../runtime/client";
 import { WailsV3Transport } from "../../transport";
 import { SystemClient as SharedSystemClient } from "../../../../routes/api/system/client";
 
-
 export type SystemClient = SharedSystemClient;
-
 
 export function createClient(config: ApiClientConfig = {}): SystemClient {
   return new SharedSystemClient({

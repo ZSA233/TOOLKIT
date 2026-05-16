@@ -24,7 +24,7 @@ func (router *Router) GetCurrentSettings(
 	if err != nil {
 		return nil, err
 	}
-	return savedSettingsProto(settings), nil
+	return savedSettingsDTO(settings), nil
 }
 
 func (router *Router) SaveCurrentSettings(
@@ -37,5 +37,5 @@ func (router *Router) SaveCurrentSettings(
 	if err != nil {
 		return nil, err
 	}
-	return savedSettingsProto(settings), nil
+	return savedSettingsDTO(settings), nil
 }

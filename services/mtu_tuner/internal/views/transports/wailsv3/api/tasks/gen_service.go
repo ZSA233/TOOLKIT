@@ -34,7 +34,7 @@ func newGeneratedTasksService(impl RouterInterface, dispatcher wailstransport.Ev
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.GetCurrentTask,
 		),
 		taskEventsExecutor: sharedprovider.NewRouteExecutor[
@@ -70,7 +70,7 @@ func newGeneratedTasksService(impl RouterInterface, dispatcher wailstransport.Ev
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.StartConnectivityTest,
 		),
 		startMtuSweepExecutor: sharedprovider.NewRouteExecutor(
@@ -86,7 +86,7 @@ func newGeneratedTasksService(impl RouterInterface, dispatcher wailstransport.Ev
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.StartMtuSweep,
 		),
 		cancelCurrentTaskExecutor: sharedprovider.NewRouteExecutor(
@@ -102,7 +102,7 @@ func newGeneratedTasksService(impl RouterInterface, dispatcher wailstransport.Ev
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.CancelCurrentTask,
 		),
 	}
@@ -117,7 +117,7 @@ func (svc *TasksService) SetConnectionHub(hub wailstransport.ConnectionHub) {
 
 func (svc *TasksService) GetCurrentTask(
 	envelope *INVOKE_GetCurrentTask,
-) (rsp *RSP_GetCurrentTask, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_GetCurrentTask], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  false,
@@ -139,7 +139,7 @@ func (svc *TasksService) GetCurrentTask(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *TasksService) SubscribeTaskEvents(
@@ -201,7 +201,7 @@ func (svc *TasksService) CloseTaskEvents(request *CONNECTION_CLOSE_TaskEvents) e
 
 func (svc *TasksService) StartConnectivityTest(
 	envelope *INVOKE_StartConnectivityTest,
-) (rsp *RSP_StartConnectivityTest, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_StartConnectivityTest], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -223,12 +223,12 @@ func (svc *TasksService) StartConnectivityTest(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *TasksService) StartMtuSweep(
 	envelope *INVOKE_StartMtuSweep,
-) (rsp *RSP_StartMtuSweep, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_StartMtuSweep], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -250,12 +250,12 @@ func (svc *TasksService) StartMtuSweep(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *TasksService) CancelCurrentTask(
 	envelope *INVOKE_CancelCurrentTask,
-) (rsp *RSP_CancelCurrentTask, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_CancelCurrentTask], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  false,
@@ -277,5 +277,5 @@ func (svc *TasksService) CancelCurrentTask(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }

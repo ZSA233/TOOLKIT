@@ -1,4 +1,4 @@
-import type { SavedSettings } from "../../../lib/api/api/runtime/models";
+import type { SavedSettings } from "../../../lib/api/api/runtime/types";
 import { DEFAULT_SESSION_SETTINGS } from "../constants";
 import type { SessionSettings, TestTargetSettings } from "../types";
 

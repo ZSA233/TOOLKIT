@@ -63,8 +63,8 @@ import type {
   TaskLogEvent,
   TaskProgressEvent,
 } from "./types";
-import type { InterfaceInfo, TaskState } from "../../lib/api/api/runtime/models";
-import type { TaskEventMessage } from "../../lib/api/api/routes/api/tasks/models";
+import type { InterfaceInfo, TaskState } from "../../lib/api/api/runtime/types";
+import type { TaskEventMessage } from "../../lib/api/api/routes/api/tasks/types";
 
 export function useDashboardController(deps: DashboardDeps): {
   state: DashboardState;

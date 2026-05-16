@@ -24,7 +24,7 @@ func (router *Router) ListInterfaces(
 		return nil, err
 	}
 	return &RSP_ListInterfaces{
-		Interfaces: interfaceInfoListProto(interfaces),
+		Interfaces: interfaceInfoListDTO(interfaces),
 	}, nil
 }
 
@@ -47,10 +47,10 @@ func (router *Router) DetectInterface(
 		return nil, err
 	}
 	return &RSP_DetectInterface{
-		Selection:   probeSelectionProto(result.Selection),
-		Interface:   interfaceInfoProto(result.Interface),
+		Selection:   probeSelectionDTO(result.Selection),
+		Interface:   interfaceInfoDTO(result.Interface),
 		OriginalMtu: result.OriginalMTU,
-		Candidates:  interfaceInfoListProto(result.Candidates),
+		Candidates:  interfaceInfoListDTO(result.Candidates),
 	}, nil
 }
 
@@ -69,7 +69,7 @@ func (router *Router) ResolveClashTarget(
 	if err != nil {
 		return nil, err
 	}
-	return clashTargetProto(target), nil
+	return clashTargetDTO(target), nil
 }
 
 func (router *Router) RefreshInterface(
@@ -82,7 +82,7 @@ func (router *Router) RefreshInterface(
 	if err != nil {
 		return nil, err
 	}
-	return interfaceCommandResultProto(result), nil
+	return interfaceCommandResultDTO(result), nil
 }
 
 func (router *Router) ApplyInterfaceMtu(
@@ -95,7 +95,7 @@ func (router *Router) ApplyInterfaceMtu(
 	if err != nil {
 		return nil, err
 	}
-	return interfaceCommandResultProto(result), nil
+	return interfaceCommandResultDTO(result), nil
 }
 
 func (router *Router) RestoreInterfaceMtu(
@@ -108,7 +108,7 @@ func (router *Router) RestoreInterfaceMtu(
 	if err != nil {
 		return nil, err
 	}
-	return interfaceCommandResultProto(result), nil
+	return interfaceCommandResultDTO(result), nil
 }
 
 func (router *Router) PersistInterfaceMtu(
@@ -121,5 +121,5 @@ func (router *Router) PersistInterfaceMtu(
 	if err != nil {
 		return nil, err
 	}
-	return interfaceCommandResultProto(result), nil
+	return interfaceCommandResultDTO(result), nil
 }

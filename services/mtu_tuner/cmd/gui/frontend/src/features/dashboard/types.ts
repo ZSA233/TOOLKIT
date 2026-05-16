@@ -7,7 +7,7 @@ import type {
   TaskProgress,
   TaskState,
   TestTarget,
-} from "../../lib/api/api/runtime/models";
+} from "../../lib/api/api/runtime/types";
 
 export type NavKey = "overview" | "route" | "scan" | "logs";
 export type InterfaceSelectionMode = "auto" | "manual";

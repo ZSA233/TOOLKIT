@@ -3,12 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { ApiStreamBridge } from "../../lib/api/api/runtime/client";
-import type { TaskEventMessage } from "../../lib/api/api/routes/api/tasks/models";
+import type { TaskEventMessage } from "../../lib/api/api/routes/api/tasks/types";
 import type {
   DefaultConnectionClose,
   InterfaceInfo,
   InterfaceRef,
-} from "../../lib/api/api/runtime/models";
+} from "../../lib/api/api/runtime/types";
 import type { DashboardDeps } from "./deps";
 import { DEFAULT_SAVED_SETTINGS } from "./constants";
 import { DashboardApp } from "./DashboardApp";
@@ -343,7 +343,9 @@ describe("DashboardApp", () => {
       expect(deps.api.tasksClient.subscribeTaskEvents).toHaveBeenCalledTimes(1);
     });
 
-    expect((screen.getByLabelText("Interface") as HTMLSelectElement).value).toBe("darwin|7");
+    await waitFor(() => {
+      expect((screen.getByLabelText("Interface") as HTMLSelectElement).value).toBe("darwin|7");
+    });
     expect(
       screen.queryByText("Cross-platform MTU tuning without a local HTTP server"),
     ).toBeNull();
@@ -477,9 +479,11 @@ describe("DashboardApp", () => {
 
     const select = screen.getByLabelText("Interface") as HTMLSelectElement;
     const applyButton = screen.getByRole("button", { name: "Apply MTU" }) as HTMLButtonElement;
-    expect(select.disabled).toBe(false);
-    expect(applyButton.disabled).toBe(false);
-    expect(screen.queryByText("Detecting…")).toBeNull();
+    await waitFor(() => {
+      expect(select.disabled).toBe(false);
+      expect(applyButton.disabled).toBe(false);
+      expect(screen.queryByText("Detecting…")).toBeNull();
+    });
 
     await user.click(screen.getByRole("button", { name: "Auto Detect" }));
 

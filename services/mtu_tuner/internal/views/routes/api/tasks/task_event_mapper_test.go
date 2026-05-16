@@ -6,7 +6,7 @@ import (
 	"mtu-tuner/internal/core"
 )
 
-func TestTaskStateProtoMapsCurrentTaskState(t *testing.T) {
+func TestTaskStateDTOMapsCurrentTaskState(t *testing.T) {
 	t.Parallel()
 
 	state := core.TaskState{
@@ -15,9 +15,9 @@ func TestTaskStateProtoMapsCurrentTaskState(t *testing.T) {
 		CancelRequested: true,
 	}
 
-	got := taskStateProto(state)
+	got := taskStateDTO(state)
 	if got.Kind != state.Kind || got.Status != state.Status || got.CancelRequested != state.CancelRequested {
-		t.Fatalf("taskStateProto() = %#v, want %#v", got, state)
+		t.Fatalf("taskStateDTO() = %#v, want %#v", got, state)
 	}
 }
 

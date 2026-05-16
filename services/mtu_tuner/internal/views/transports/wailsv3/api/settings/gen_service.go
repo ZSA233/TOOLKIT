@@ -31,7 +31,7 @@ func newGeneratedSettingsService(impl RouterInterface, dispatcher wailstransport
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.GetCurrentSettings,
 		),
 		saveCurrentSettingsExecutor: sharedprovider.NewRouteExecutor(
@@ -47,7 +47,7 @@ func newGeneratedSettingsService(impl RouterInterface, dispatcher wailstransport
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.SaveCurrentSettings,
 		),
 	}
@@ -62,7 +62,7 @@ func (svc *SettingsService) SetConnectionHub(hub wailstransport.ConnectionHub) {
 
 func (svc *SettingsService) GetCurrentSettings(
 	envelope *INVOKE_GetCurrentSettings,
-) (rsp *RSP_GetCurrentSettings, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_GetCurrentSettings], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  false,
@@ -84,12 +84,12 @@ func (svc *SettingsService) GetCurrentSettings(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *SettingsService) SaveCurrentSettings(
 	envelope *INVOKE_SaveCurrentSettings,
-) (rsp *RSP_SaveCurrentSettings, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_SaveCurrentSettings], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -111,5 +111,5 @@ func (svc *SettingsService) SaveCurrentSettings(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }

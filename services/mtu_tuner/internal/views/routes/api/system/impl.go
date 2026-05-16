@@ -16,5 +16,5 @@ func NewRouter() *Router {
 }
 
 func (impl *Router) GetSystemStatus(ctx *CTX_GetSystemStatus, req *REQ_GetSystemStatus) (rsp *RSP_GetSystemStatus, err error) {
-	return systemStatusProto(impl.service.Status(ctx)), nil
+	return systemStatusDTO(impl.service.Status(ctx)), nil
 }

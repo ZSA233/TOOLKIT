@@ -36,7 +36,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.ListInterfaces,
 		),
 		detectInterfaceExecutor: sharedprovider.NewRouteExecutor(
@@ -52,7 +52,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.DetectInterface,
 		),
 		resolveClashTargetExecutor: sharedprovider.NewRouteExecutor(
@@ -68,7 +68,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.ResolveClashTarget,
 		),
 		refreshInterfaceExecutor: sharedprovider.NewRouteExecutor(
@@ -84,7 +84,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.RefreshInterface,
 		),
 		applyInterfaceMtuExecutor: sharedprovider.NewRouteExecutor(
@@ -100,7 +100,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.ApplyInterfaceMtu,
 		),
 		restoreInterfaceMtuExecutor: sharedprovider.NewRouteExecutor(
@@ -116,7 +116,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req|handle|rsp=json@NoneWrapper",
+			"req|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.RestoreInterfaceMtu,
 		),
 		persistInterfaceMtuExecutor: sharedprovider.NewRouteExecutor(
@@ -132,7 +132,7 @@ func newGeneratedNetworkService(impl RouterInterface, dispatcher wailstransport.
 				Transport: sharedprovider.TransportWails,
 				Scope:     sharedprovider.ConnectionScope(""),
 			},
-			"req=J|handle|rsp=json@NoneWrapper",
+			"req=J|handle|rsp=json@CodeMessageDataEnvelope",
 			impl.PersistInterfaceMtu,
 		),
 	}
@@ -147,7 +147,7 @@ func (svc *NetworkService) SetConnectionHub(hub wailstransport.ConnectionHub) {
 
 func (svc *NetworkService) ListInterfaces(
 	envelope *INVOKE_ListInterfaces,
-) (rsp *RSP_ListInterfaces, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_ListInterfaces], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  false,
@@ -169,12 +169,12 @@ func (svc *NetworkService) ListInterfaces(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) DetectInterface(
 	envelope *INVOKE_DetectInterface,
-) (rsp *RSP_DetectInterface, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_DetectInterface], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -196,12 +196,12 @@ func (svc *NetworkService) DetectInterface(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) ResolveClashTarget(
 	envelope *INVOKE_ResolveClashTarget,
-) (rsp *RSP_ResolveClashTarget, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_ResolveClashTarget], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -223,12 +223,12 @@ func (svc *NetworkService) ResolveClashTarget(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) RefreshInterface(
 	envelope *INVOKE_RefreshInterface,
-) (rsp *RSP_RefreshInterface, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_RefreshInterface], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -250,12 +250,12 @@ func (svc *NetworkService) RefreshInterface(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) ApplyInterfaceMtu(
 	envelope *INVOKE_ApplyInterfaceMtu,
-) (rsp *RSP_ApplyInterfaceMtu, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_ApplyInterfaceMtu], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -277,12 +277,12 @@ func (svc *NetworkService) ApplyInterfaceMtu(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) RestoreInterfaceMtu(
 	envelope *INVOKE_RestoreInterfaceMtu,
-) (rsp *RSP_RestoreInterfaceMtu, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_RestoreInterfaceMtu], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -304,12 +304,12 @@ func (svc *NetworkService) RestoreInterfaceMtu(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }
 
 func (svc *NetworkService) PersistInterfaceMtu(
 	envelope *INVOKE_PersistInterfaceMtu,
-) (rsp *RSP_PersistInterfaceMtu, err error) {
+) (rsp *sharedprovider.RSP_JSON_CodeMessageDataEnvelope[RSP_PersistInterfaceMtu], err error) {
 	req, reqErr := wailstransport.EnvelopeToReq(envelope, wailstransport.ReqEnvelopeOptions{
 		BindQuery: false,
 		BindJSON:  true,
@@ -331,5 +331,5 @@ func (svc *NetworkService) PersistInterfaceMtu(
 		invokeErr = execErr
 	}
 
-	return response, invokeErr
+	return sharedprovider.WrapRSP_JSON_CodeMessageDataEnvelope(response, invokeErr), nil
 }

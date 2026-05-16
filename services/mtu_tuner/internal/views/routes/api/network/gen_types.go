@@ -4,7 +4,7 @@ package network
 
 import (
 	providers "mtu-tuner/internal/views/providers"
-	protos "mtu-tuner/internal/views/routes/api/_gen_protos"
+	types "mtu-tuner/internal/views/routes/api/_gen_types"
 )
 
 type REQ_ListInterfaces = providers.REQ[
@@ -12,7 +12,7 @@ type REQ_ListInterfaces = providers.REQ[
 	any,
 ]
 
-type RSP_ListInterfaces_BODY = protos.InterfaceListResponse
+type RSP_ListInterfaces_BODY = types.InterfaceListResponse
 
 type RSP_ListInterfaces = RSP_ListInterfaces_BODY
 
@@ -22,14 +22,14 @@ type CTX_ListInterfaces = providers.Context[
 	RSP_ListInterfaces_BODY,
 ]
 
-type REQ_DetectInterface_JSON = protos.DetectInterfaceRequest
+type REQ_DetectInterface_JSON = types.DetectInterfaceRequest
 
 type REQ_DetectInterface = providers.REQ[
 	any,
 	REQ_DetectInterface_JSON,
 ]
 
-type RSP_DetectInterface_BODY = protos.DetectInterfaceResponse
+type RSP_DetectInterface_BODY = types.DetectInterfaceResponse
 
 type RSP_DetectInterface = RSP_DetectInterface_BODY
 
@@ -39,14 +39,14 @@ type CTX_DetectInterface = providers.Context[
 	RSP_DetectInterface_BODY,
 ]
 
-type REQ_ResolveClashTarget_JSON = protos.ResolveClashTargetRequest
+type REQ_ResolveClashTarget_JSON = types.ResolveClashTargetRequest
 
 type REQ_ResolveClashTarget = providers.REQ[
 	any,
 	REQ_ResolveClashTarget_JSON,
 ]
 
-type RSP_ResolveClashTarget_BODY = protos.ClashTarget
+type RSP_ResolveClashTarget_BODY = types.ClashTarget
 
 type RSP_ResolveClashTarget = RSP_ResolveClashTarget_BODY
 
@@ -56,14 +56,14 @@ type CTX_ResolveClashTarget = providers.Context[
 	RSP_ResolveClashTarget_BODY,
 ]
 
-type REQ_RefreshInterface_JSON = protos.InterfaceRefreshRequest
+type REQ_RefreshInterface_JSON = types.InterfaceRefreshRequest
 
 type REQ_RefreshInterface = providers.REQ[
 	any,
 	REQ_RefreshInterface_JSON,
 ]
 
-type RSP_RefreshInterface_BODY = protos.InterfaceCommandResult
+type RSP_RefreshInterface_BODY = types.InterfaceCommandResult
 
 type RSP_RefreshInterface = RSP_RefreshInterface_BODY
 
@@ -73,14 +73,14 @@ type CTX_RefreshInterface = providers.Context[
 	RSP_RefreshInterface_BODY,
 ]
 
-type REQ_ApplyInterfaceMtu_JSON = protos.InterfaceMtuCommandRequest
+type REQ_ApplyInterfaceMtu_JSON = types.InterfaceMtuCommandRequest
 
 type REQ_ApplyInterfaceMtu = providers.REQ[
 	any,
 	REQ_ApplyInterfaceMtu_JSON,
 ]
 
-type RSP_ApplyInterfaceMtu_BODY = protos.InterfaceCommandResult
+type RSP_ApplyInterfaceMtu_BODY = types.InterfaceCommandResult
 
 type RSP_ApplyInterfaceMtu = RSP_ApplyInterfaceMtu_BODY
 
@@ -90,14 +90,14 @@ type CTX_ApplyInterfaceMtu = providers.Context[
 	RSP_ApplyInterfaceMtu_BODY,
 ]
 
-type REQ_RestoreInterfaceMtu_JSON = protos.InterfaceRestoreRequest
+type REQ_RestoreInterfaceMtu_JSON = types.InterfaceRestoreRequest
 
 type REQ_RestoreInterfaceMtu = providers.REQ[
 	any,
 	REQ_RestoreInterfaceMtu_JSON,
 ]
 
-type RSP_RestoreInterfaceMtu_BODY = protos.InterfaceCommandResult
+type RSP_RestoreInterfaceMtu_BODY = types.InterfaceCommandResult
 
 type RSP_RestoreInterfaceMtu = RSP_RestoreInterfaceMtu_BODY
 
@@ -107,14 +107,14 @@ type CTX_RestoreInterfaceMtu = providers.Context[
 	RSP_RestoreInterfaceMtu_BODY,
 ]
 
-type REQ_PersistInterfaceMtu_JSON = protos.InterfaceMtuCommandRequest
+type REQ_PersistInterfaceMtu_JSON = types.InterfaceMtuCommandRequest
 
 type REQ_PersistInterfaceMtu = providers.REQ[
 	any,
 	REQ_PersistInterfaceMtu_JSON,
 ]
 
-type RSP_PersistInterfaceMtu_BODY = protos.InterfaceCommandResult
+type RSP_PersistInterfaceMtu_BODY = types.InterfaceCommandResult
 
 type RSP_PersistInterfaceMtu = RSP_PersistInterfaceMtu_BODY
 

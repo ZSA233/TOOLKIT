@@ -12,7 +12,6 @@ import { createClient as createSystemClient } from "./system/client";
 import type { TasksClient } from "./tasks/client";
 import { createClient as createTasksClient } from "./tasks/client";
 
-
 export interface GeneratedClients {
   networkClient: NetworkClient;
   settingsClient: SettingsClient;

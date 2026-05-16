@@ -31,8 +31,8 @@ func TestSavedSettingsProtoRoundTripIncludesTestTargets(t *testing.T) {
 		TargetMTU: 1400,
 	}
 
-	got := savedSettingsCore(savedSettingsProto(settings))
+	got := savedSettingsCore(savedSettingsDTO(settings))
 	if !reflect.DeepEqual(got, settings) {
-		t.Fatalf("savedSettingsCore(savedSettingsProto()) = %#v, want %#v", got, settings)
+		t.Fatalf("savedSettingsCore(savedSettingsDTO()) = %#v, want %#v", got, settings)
 	}
 }
